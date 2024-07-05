@@ -54,7 +54,8 @@ if len(sys.argv) != 3:
     print(
         "Give the path to the trained shape predictor model as the first "
         "argument and then the directory containing the facial images.\n"
-        "For example, if you are in the python_examples folder then "
+        "For example, if you are in the"
+        " python_examples folder then "
         "execute this program by running:\n"
         "    ./face_landmark_detection.py shape_predictor_68_face_landmarks.dat ../examples/faces\n"
         "You can download a trained facial shape predictor from:\n"
