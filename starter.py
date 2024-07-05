@@ -2,7 +2,8 @@ import os
 # from skimage.feature import hog
 # import more libraries as you need
 import cv2
-# wanshangchism
+
+# cym说你好
 
 # T1  start _______________________________________________________________________________
 # Read in Dataset
