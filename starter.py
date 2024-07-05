@@ -1,5 +1,5 @@
 import os
-# from skimage.feature import hog
+from skimage.feature import hog
 # import more libraries as you need
 import cv2
 
@@ -13,16 +13,16 @@ X = []
 y = []
 for subject_name in os.listdir(dataset_path):
     y.append(subject_name)
-    subject_images_dir = os.path.join(dataset_path, )
+    subject_images_dir = os.path.join(dataset_path, subject_name)
 
     temp_x_list = []
     for img_name in os.listdir(subject_images_dir):
         # write code to read each 'img'
-
+        img = os.path.join(subject_images_dir, img_name)
         # add the img to temp_x_list
-    
+        temp_x_list.append(img)
     # add the temp_x_list to X
-
+    X.append(temp_x_list)
 # T1 end ____________________________________________________________________________________
 
 # T2 start __________________________________________________________________________________
