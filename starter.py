@@ -1,4 +1,5 @@
 import os
+from skimage.feature import hog
 # import more libraries as you need
 
 
