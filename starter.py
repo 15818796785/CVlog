@@ -42,7 +42,11 @@ X_processed = []
 for x_list in X:
     temp_X_processed = []
     for x in x_list:
+        # write the code to detect face in the image (x) using dlib facedetection library
+        # write the code to crop the image (x) to keep only the face, resize the cropped image to 150x150
+
         temp_img = detector2.crop_and_resize_face(x,detector, predictor)
+
 
         # cv2.imwrite('path_to_save_image.jpg', temp_img)
         # cv2.imshow('Resized Image', temp_img)
@@ -50,9 +54,6 @@ for x_list in X:
         # cv2.destroyAllWindows()  #
         # dlib.hit_enter_to_continue()
 
-
-        # write the code to detect face in the image (x) using dlib facedetection library
-        # write the code to crop the image (x) to keep only the face, resize the cropped image to 150x150
 
         # write the code to convert the image (x) to grayscale
         gray_image = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
