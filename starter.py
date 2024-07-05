@@ -7,7 +7,7 @@ import os
 # Read in Dataset
 
 # change the dataset path here according to your folder structure
-dataset_path = "D:\\Dataset_1\\"
+dataset_path = "GeorgiaTechFaces/Dataset_1"
 
 X = []
 y = []
