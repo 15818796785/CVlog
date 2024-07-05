@@ -20,7 +20,8 @@ for subject_name in os.listdir(dataset_path):
     temp_x_list = []
     for img_name in os.listdir(subject_images_dir):
         # write code to read each 'img'
-        img = os.path.join(subject_images_dir, img_name)
+        img_path = os.path.join(subject_images_dir, img_name)
+        img = cv2.imread(img_path)
         # add the img to temp_x_list
         temp_x_list.append(img)
     # add the temp_x_list to X
