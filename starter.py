@@ -7,6 +7,8 @@ from skimage.feature import hog
 # import more libraries as you need
 import cv2
 import detector2
+import tqdm
+
 
 # T1  start _______________________________________________________________________________
 # Read in Dataset
@@ -18,7 +20,7 @@ faces_folder_path = 'GeorgiaTechFaces\\Dataset_1\\s01'
 
 X = []
 y = []
-for subject_name in os.listdir(dataset_path):
+for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
     if os.path.isdir(os.path.join(dataset_path, subject_name)):
         y.append(subject_name)
         subject_images_dir = os.path.join(dataset_path, subject_name)
@@ -34,13 +36,13 @@ for subject_name in os.listdir(dataset_path):
     # add the temp_x_list to X
         X.append(temp_x_list)
 # T1 end ____________________________________________________________________________________
-
+print("finished T1")
 # T2 start __________________________________________________________________________________
 # Preprocessing
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
 X_processed = []
-for x_list in X:
+for x_list in tqdm.tqdm(X,desc= 'preprocessing images '):
     temp_X_processed = []
     for x in x_list:
         # write the code to detect face in the image (x) using dlib facedetection library
@@ -76,8 +78,7 @@ for x_list in X:
     # append temp_X_processed into  X_processed
     X_processed.append(temp_X_processed)
 # T2 end ____________________________________________________________________________________
-
-
+print("finished T2")
 # T3 start __________________________________________________________________________________
 # Create masked face dataset
 X_masked = []
