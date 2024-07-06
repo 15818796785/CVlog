@@ -3,6 +3,7 @@ import glob
 import os
 from dlib import get_frontal_face_detector, shape_predictor, image_window
 import cv2
+from matplotlib import pyplot as plt
 
 
 def crop_and_resize_face(img, detector, predictor):
@@ -26,6 +27,17 @@ def crop_and_resize_face(img, detector, predictor):
 
         # Process the first detected face
         d = dets[0]  # Assuming the first detected face is the subject
+        # # Extract the face region from the image
+        # face_region = img[d.top():d.bottom(), d.left():d.right()]
+        #
+        # # Convert the face region to a format suitable for displaying
+        # # This might involve converting from BGR to RGB if using OpenCV to load images
+        # if face_region.ndim == 3:  # Color image
+        #         face_region = face_region[:, :, ::-1]  # Converting BGR (OpenCV format) to RGB
+        # plt.imshow(face_region)  # 'cmap' is not necessary unless you want a specific colormap
+        # plt.colorbar()  # Optionally add a color bar
+        # plt.show()
+
         shape = predictor(img_rgb, d)
 
         # Get the bounding box coordinates from the landmarks
