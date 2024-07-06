@@ -9,7 +9,6 @@ import cv2
 import detector2
 import tqdm
 
-
 # T1  start _______________________________________________________________________________
 # Read in Dataset
 
@@ -28,13 +27,13 @@ for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
 
         temp_x_list = []
         for img_name in os.listdir(subject_images_dir):
-        # write code to read each 'img'
+            # write code to read each 'img'
             if img_name.endswith('.jpg'):
                 img_path = os.path.join(subject_images_dir, img_name)
                 img = cv2.imread(img_path)
-            # add the img to temp_x_list
+                # add the img to temp_x_list
                 temp_x_list.append(img)
-    # add the temp_x_list to X
+        # add the temp_x_list to X
         X.append(temp_x_list)
 # T1 end ____________________________________________________________________________________
 print("finished T1")
@@ -43,7 +42,7 @@ print("finished T1")
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
 X_processed = []
-for x_list in tqdm.tqdm(X,desc= 'preprocessing images '):
+for x_list in tqdm.tqdm(X, desc='preprocessing images '):
     temp_X_processed = []
     for x in x_list:
         # write the code to detect face in the image (x) using dlib facedetection library
@@ -51,13 +50,11 @@ for x_list in tqdm.tqdm(X,desc= 'preprocessing images '):
 
         temp_img = detector2.crop_and_resize_face(x, detector, predictor)
 
-
         # cv2.imwrite('path_to_save_image.jpg', temp_img)
         # cv2.imshow('Resized Image', temp_img)
         # cv2.waitKey(0)  # 等待用户按键
         # cv2.destroyAllWindows()  #
         # dlib.hit_enter_to_continue()
-
 
         # write the code to convert the image (x) to grayscale
         gray_image = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
@@ -73,35 +70,100 @@ for x_list in tqdm.tqdm(X,desc= 'preprocessing images '):
         # plt.show()
         # dlib.hit_enter_to_continue()
 
-
         # append the converted image into temp_X_processed
         temp_X_processed.append(gray_image)
 
     # append temp_X_processed into  X_processed
     X_processed.append(temp_X_processed)
-    
+
 # Save the processed images
 for i, subject_images in enumerate(X_processed):
-    subject_folder = os.path.join(processed_dataset_path, f"s{str(i+1).zfill(2)}")
+    subject_folder = os.path.join(processed_dataset_path, f"s{str(i + 1).zfill(2)}")
     os.makedirs(subject_folder, exist_ok=True)
     for j, img in enumerate(subject_images):
-        cv2.imwrite(os.path.join(subject_folder, f"{str(j+1).zfill(2)}.jpg"), img)
-        
+        cv2.imwrite(os.path.join(subject_folder, f"{str(j + 1).zfill(2)}.jpg"), img)
+
 # T2 end ____________________________________________________________________________________
 print("finished T2")
 # T3 start __________________________________________________________________________________
 # Create masked face dataset
+# def add_mask(image, landmarks):
+#     # 使用适当的特征点来绘制口罩
+#     mask_points = np.array([
+#         landmarks[2],  # 左脸颊
+#         landmarks[14],  # 右脸颊
+#         landmarks[30],  # 鼻子底部
+#         landmarks[31],  # 左鼻梁
+#         landmarks[35],  # 右鼻梁
+#         landmarks[48],  # 左嘴角
+#         landmarks[54],  # 右嘴角
+#         landmarks[57],  # 下巴
+#     ])
+#     mask = np.zeros_like(image)
+#     cv2.fillPoly(mask, [mask_points], 255)
+#     masked_image = cv2.addWeighted(image, 1, mask, 0.6, 0)
+#     return masked_image
+#
+#
+# X_masked = []
+# for x_list in tqdm.tqdm(X_processed, desc='adding masks'):
+#     temp_X_masked = []
+#     for x in x_list:
+#         dets = detector(x, 1)
+#         for k, d in enumerate(dets):
+#             shape = predictor(x, d)
+#             landmarks = np.array([[p.x, p.y] for p in shape.parts()])
+#             masked_face = add_mask(x, landmarks)
+#             cv2.imwrite('path_to_save_maskedface.jpg', masked_face)
+#             cv2.imshow('Resized Image', masked_face)
+#             cv2.waitKey(0)  # 等待用户按键
+#             cv2.destroyAllWindows()  #
+#             dlib.hit_enter_to_continue()
+#             temp_X_masked.append(masked_face)
+#     X_masked.append(temp_X_masked)
+# print("finished T3")
+
+
+def add_mask(image, landmarks):
+    # 使用适当的特征点来绘制口罩
+    mask_points = np.array([
+        landmarks[2],  # 左脸颊
+        landmarks[14],  # 右脸颊
+        landmarks[30],  # 鼻子底部
+        landmarks[31],  # 左鼻梁
+        landmarks[35],  # 右鼻梁
+        # landmarks[48],  # 左嘴角
+        # landmarks[54],  # 右嘴角
+        landmarks[57],  # 下巴
+    ])
+    mask = np.zeros_like(image)
+    cv2.fillPoly(mask, [mask_points], 255)
+    masked_image = cv2.addWeighted(image, 1, mask, 0.6, 0)
+    return masked_image
+
+
 X_masked = []
-for x_list in X_processed:
+for x_list in tqdm.tqdm(X_processed, desc='adding masks'):
     temp_X_masked = []
-   # for x in x_list:
-        # write the code to detect face in the image (x) using dlib facedetection library
+    for x in x_list:
+        dets = detector(x, 1)
+        for k, d in enumerate(dets):
+            shape = predictor(x, d)
+            landmarks = np.array([[p.x, p.y] for p in shape.parts()])
+            masked_face = add_mask(x, landmarks)
+            cv2.imwrite('path_to_save_maskedface.jpg', masked_face)
 
-        # write the code to add synthetic mask as shown in the project problem description
+# X_masked = []
+# for x_list in X_processed:
+#     temp_X_masked = []
+# for x in x_list:
+# write the code to detect face in the image (x) using dlib facedetection library
 
-        # append the converted image into temp_X_masked
+# write the code to add synthetic mask as shown in the project problem description
 
-    # append temp_X_masked into  X_masked
+# append the converted image into temp_X_masked
+
+# append temp_X_masked into  X_masked
 
 # T3 end ____________________________________________________________________________________
 
@@ -116,7 +178,6 @@ for x_list in X_masked:
                         cells_per_block=(1, 1), visualize=False, multichannel=False)
         temp_X_features.append(x_feature)
     X_features.append(temp_X_features)
-
 
 # write code to split the dataset into train-set and test-set
 
