@@ -17,6 +17,7 @@ import tqdm
 dataset_path = "GeorgiaTechFaces/Dataset_1"
 predictor_path = 'shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
 faces_folder_path = 'GeorgiaTechFaces\\Dataset_1\\s01'
+processed_dataset_path = "GeorgiaTechFaces/Processedset_1"
 
 X = []
 y = []
@@ -48,14 +49,14 @@ for x_list in tqdm.tqdm(X,desc= 'preprocessing images '):
         # write the code to detect face in the image (x) using dlib facedetection library
         # write the code to crop the image (x) to keep only the face, resize the cropped image to 150x150
 
-        temp_img = detector2.crop_and_resize_face(x,detector, predictor)
+        temp_img = detector2.crop_and_resize_face(x, detector, predictor)
 
 
-        cv2.imwrite('path_to_save_image.jpg', temp_img)
-        cv2.imshow('Resized Image', temp_img)
-        cv2.waitKey(0)  # 等待用户按键
-        cv2.destroyAllWindows()  #
-        dlib.hit_enter_to_continue()
+        # cv2.imwrite('path_to_save_image.jpg', temp_img)
+        # cv2.imshow('Resized Image', temp_img)
+        # cv2.waitKey(0)  # 等待用户按键
+        # cv2.destroyAllWindows()  #
+        # dlib.hit_enter_to_continue()
 
 
         # write the code to convert the image (x) to grayscale
@@ -63,14 +64,14 @@ for x_list in tqdm.tqdm(X,desc= 'preprocessing images '):
         # 计算直方图
         hist, bins = np.histogram(gray_image.flatten(), bins=256, range=[0, 256])
 
-        plt.figure()
-        plt.title("Grayscale Histogram")
-        plt.xlabel("Gray level")
-        plt.ylabel("Frequency")
-        plt.plot(hist)
-        plt.xlim([0, 256])
-        plt.show()
-        dlib.hit_enter_to_continue()
+        # plt.figure()
+        # plt.title("Grayscale Histogram")
+        # plt.xlabel("Gray level")
+        # plt.ylabel("Frequency")
+        # plt.plot(hist)
+        # plt.xlim([0, 256])
+        # plt.show()
+        # dlib.hit_enter_to_continue()
 
 
         # append the converted image into temp_X_processed
@@ -78,6 +79,14 @@ for x_list in tqdm.tqdm(X,desc= 'preprocessing images '):
 
     # append temp_X_processed into  X_processed
     X_processed.append(temp_X_processed)
+    
+# Save the processed images
+for i, subject_images in enumerate(X_processed):
+    subject_folder = os.path.join(processed_dataset_path, f"s{str(i+1).zfill(2)}")
+    os.makedirs(subject_folder, exist_ok=True)
+    for j, img in enumerate(subject_images):
+        cv2.imwrite(os.path.join(subject_folder, f"{str(j+1).zfill(2)}.jpg"), img)
+        
 # T2 end ____________________________________________________________________________________
 print("finished T2")
 # T3 start __________________________________________________________________________________
