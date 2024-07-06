@@ -51,11 +51,11 @@ for x_list in tqdm.tqdm(X,desc= 'preprocessing images '):
         temp_img = detector2.crop_and_resize_face(x,detector, predictor)
 
 
-        # cv2.imwrite('path_to_save_image.jpg', temp_img)
-        # cv2.imshow('Resized Image', temp_img)
-        # cv2.waitKey(0)  # 等待用户按键
-        # cv2.destroyAllWindows()  #
-        # dlib.hit_enter_to_continue()
+        cv2.imwrite('path_to_save_image.jpg', temp_img)
+        cv2.imshow('Resized Image', temp_img)
+        cv2.waitKey(0)  # 等待用户按键
+        cv2.destroyAllWindows()  #
+        dlib.hit_enter_to_continue()
 
 
         # write the code to convert the image (x) to grayscale
@@ -63,14 +63,15 @@ for x_list in tqdm.tqdm(X,desc= 'preprocessing images '):
         # 计算直方图
         hist, bins = np.histogram(gray_image.flatten(), bins=256, range=[0, 256])
 
-        # plt.figure()
-        # plt.title("Grayscale Histogram")
-        # plt.xlabel("Gray level")
-        # plt.ylabel("Frequency")
-        # plt.plot(hist)
-        # plt.xlim([0, 256])
-        # plt.show()
-        # dlib.hit_enter_to_continue()
+        plt.figure()
+        plt.title("Grayscale Histogram")
+        plt.xlabel("Gray level")
+        plt.ylabel("Frequency")
+        plt.plot(hist)
+        plt.xlim([0, 256])
+        plt.show()
+        dlib.hit_enter_to_continue()
+
 
         # append the converted image into temp_X_processed
         temp_X_processed.append(gray_image)
