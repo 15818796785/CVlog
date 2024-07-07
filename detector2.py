@@ -23,6 +23,7 @@ def crop_and_resize_face(img, detector, predictor):
         # Detect faces
         dets = detector(img_rgb, 1)
         if len(dets) == 0:
+            print('no faces detected')
             return None  # No faces detected
 
         # Process the first detected face
