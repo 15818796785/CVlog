@@ -1,33 +1,58 @@
-import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn import svm
+from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
+from skimage.feature import hog
+import tqdm
+import os
+import cv2
+import numpy as np
 
-from starter import X_processed, X_masked
-
-# 假设 X_processed 是处理过的正常人脸图像的特征列表
-# 假设 X_masked 是带有面具的人脸图像的特征列表
-# y 是包含图像标签的列表，'mask' 表示戴面具，'no_mask' 表示不戴面具
-
-# 将正常和带面具的数据合并
-
-X = np.concatenate([X_processed, X_masked])
-y = ['no_mask'] * len(X_processed) + ['mask'] * len(X_masked)
+# 从文件夹中读取数据
+maskdataset_path = "GeorgiaTechFaces/Maskedset_1"
+processdataset_path = "GeorgiaTechFaces/Processedset_1"
 
 
+X_masked = []
+y = []
+for subject_name in tqdm.tqdm(os.listdir(maskdataset_path), desc='reading images'):
+    if os.path.isdir(os.path.join(maskdataset_path, subject_name)):
+        y.append(subject_name)
+        subject_images_dir = os.path.join(maskdataset_path, subject_name)
+        temp_x_list = []
+        for img_name in os.listdir(subject_images_dir):
+            if img_name.endswith('.jpg'):
+                img_path = os.path.join(subject_images_dir, img_name)
+                img = cv2.imread(img_path)
+                gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                temp_x_list.append(gray_img)
+        X_masked.append(temp_x_list)
 
-# 分割数据为训练集和测试集，比例为80%训练，20%测试
-x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle=True)
+X_processed = []
+for subject_name in tqdm.tqdm(os.listdir(processdataset_path), desc='reading images'):
+    if os.path.isdir(os.path.join(processdataset_path, subject_name)):
+        subject_images_dir = os.path.join(processdataset_path, subject_name)
+        temp_x_list = []
+        for img_name in os.listdir(subject_images_dir):
+            if img_name.endswith('.jpg'):
+                img_path = os.path.join(subject_images_dir, img_name)
+                img = cv2.imread(img_path)
+                gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                temp_x_list.append(gray_img)
+        X_processed.append(temp_x_list)
 
-# 初始化 SVM 分类器
-classifier = svm.SVC(kernel='linear')  # 使用线性核
 
-# 训练模型
-classifier.fit(x_train, y_train)
+# 将X_processed和X_masked组合起来作为输入特征
+X = np.concatenate([X_processed, X_masked], axis=1)
 
-# 使用测试集预测结果
-y_pred = classifier.predict(x_test)
+# 分割数据集为训练集和测试集，使用80-20的比例，并且打乱数据
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True, random_state=42)
 
-# 计算准确率
+# 训练SVM二分类器
+model = SVC(kernel='linear')
+model.fit(x_train, y_train)
+
+# 使用测试集评估分类器
+y_pred = model.predict(x_test)
 accuracy = accuracy_score(y_test, y_pred)
-print(f"分类器准确率：{accuracy * 100:.2f}%")
+
+print(f'Accuracy: {accuracy * 100:.2f}%')

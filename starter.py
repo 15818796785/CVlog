@@ -104,14 +104,14 @@ print("finished T2")
 
 # T4 start __________________________________________________________________________________
 # Build a detector that can detect presence of facemask given an input image
-X_features = []
-for x_list in X_masked:
-    temp_X_features = []
-    for x in x_list:
-        x_feature = hog(x, orientations=8, pixels_per_cell=(10, 10),
-                        cells_per_block=(1, 1), visualize=False, multichannel=False)
-        temp_X_features.append(x_feature)
-    X_features.append(temp_X_features)
+# X_features = []
+# for x_list in X_masked:
+#     temp_X_features = []
+#     for x in x_list:
+#         x_feature = hog(x, orientations=8, pixels_per_cell=(10, 10),
+#                         cells_per_block=(1, 1), visualize=False, multichannel=False)
+#         temp_X_features.append(x_feature)
+#     X_features.append(temp_X_features)
 
 # write code to split the dataset into train-set and test-set
 
