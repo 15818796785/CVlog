@@ -72,10 +72,16 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle
 
 # Train the SVM classifier
 svm_classifier = SVC(kernel='linear')
-svm_classifier.fit(X_train, y_train)
 
-# Test the classifier
-y_pred = svm_classifier.predict(X_test)
+print("Training the SVM classifier...")
+with tqdm.tqdm(total=len(y_train), desc="Training") as pbar:
+    svm_classifier.fit(X_train, y_train)
+    pbar.update(len(y_train))
+
+print("Testing the classifier...")
+with tqdm.tqdm(total=len(y_test), desc="Testing") as pbar:
+    y_pred = svm_classifier.predict(X_test)
+    pbar.update(len(y_test))
 
 # Evaluate the classifier
 accuracy = accuracy_score(y_test, y_pred)
