@@ -89,9 +89,11 @@ y_pred = oc_svm.predict(X_test_scaled)
 y_pred = ['Accepted' if x == 1 else 'Rejected' for x in y_pred]
 
 # 输出预测结果
-print(y_pred)
+print("y_pred",y_pred)
+print("y_test",y_test)
+
 
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Model accuracy: {accuracy * 100:.2f}%")
-print(y_pred)
+
 
