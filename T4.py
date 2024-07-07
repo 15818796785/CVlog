@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import svm
 from sklearn.metrics import accuracy_score
 
-from CVlog.starter import X_processed, X_masked
+from starter import X_processed, X_masked
 
 # 假设 X_processed 是处理过的正常人脸图像的特征列表
 # 假设 X_masked 是带有面具的人脸图像的特征列表
