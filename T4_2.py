@@ -15,15 +15,15 @@ X_processed = []
 y = []
 for subject_name in tqdm.tqdm(os.listdir(maskedset_path), desc='reading masked images'):
     if os.path.isdir(os.path.join(maskedset_path, subject_name)):
-        y.append(subject_name)
+        # y.append(subject_name)
         subject_images_dir = os.path.join(maskedset_path, subject_name)
         temp_x_list = []
         for img_name in os.listdir(subject_images_dir):
             if img_name.endswith('.jpg'):
                 img_path = os.path.join(subject_images_dir, img_name)
-                img = cv2.imread(img_path)
-                gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                temp_x_list.append(gray_img)
+                img = cv2.imread(img_path, flags=0)
+                # gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                temp_x_list.append(img)
         X_masked.append(temp_x_list)
         
 for subject_name in tqdm.tqdm(os.listdir(processedset_path), desc='reading processed images'):
@@ -34,6 +34,7 @@ for subject_name in tqdm.tqdm(os.listdir(processedset_path), desc='reading proce
             if img_name.endswith('.jpg'):
                 img_path = os.path.join(subject_images_dir, img_name)
                 img = cv2.imread(img_path)
+                # gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 temp_x_list.append(img)
         X_processed.append(temp_x_list)
 
@@ -47,7 +48,15 @@ for x_list in X_masked:
     X_masked_features.append(temp_X_features)
 
 X_processed_features = []
-for x_list in X_processed:
+# for x_list in X_processed:
+#     temp_X_features = []
+#     for x in x_list:
+#         x_feature = hog(cv2.cvtColor(x, cv2.COLOR_BGR2GRAY), orientations=8, pixels_per_cell=(10, 10),
+#                         cells_per_block=(1, 1), visualize=False)
+#         temp_X_features.append(x_feature)
+#     X_processed_features.append(temp_X_features)
+
+for x_list in tqdm.tqdm(X_processed, desc="Processing images", unit="image"):
     temp_X_features = []
     for x in x_list:
         x_feature = hog(cv2.cvtColor(x, cv2.COLOR_BGR2GRAY), orientations=8, pixels_per_cell=(10, 10),
@@ -74,14 +83,10 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle
 svm_classifier = SVC(kernel='linear')
 
 print("Training the SVM classifier...")
-with tqdm.tqdm(total=len(y_train), desc="Training") as pbar:
-    svm_classifier.fit(X_train, y_train)
-    pbar.update(len(y_train))
+svm_classifier.fit(X_train, y_train)
 
 print("Testing the classifier...")
-with tqdm.tqdm(total=len(y_test), desc="Testing") as pbar:
-    y_pred = svm_classifier.predict(X_test)
-    pbar.update(len(y_test))
+y_pred = svm_classifier.predict(X_test)
 
 # Evaluate the classifier
 accuracy = accuracy_score(y_test, y_pred)
