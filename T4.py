@@ -7,7 +7,7 @@ import os
 import cv2
 import numpy as np
 
-maskedset_path = "GeorgiaTechFaces/Maskedset_1"
+maskedset_path = "GeorgiaTechFaces/Maskprocessedset_1"
 processedset_path = "GeorgiaTechFaces/Processedset_1"
 
 X_masked = []
@@ -67,6 +67,7 @@ for x_list in tqdm.tqdm(X_processed, desc="HOG processed images", unit="image"):
 # Flatten the lists
 X_masked_flat = [feature for sublist in X_masked_features for feature in sublist]
 X_processed_flat = [feature for sublist in X_processed_features for feature in sublist]
+# print(len(X_masked_flat), len(X_processed_flat))
 
 # Creating labels for masked and processed images
 y_masked = [1] * len(X_masked_flat)
@@ -78,7 +79,7 @@ y = y_masked + y_processed
 
 # Split the dataset into training and testing sets (80-20 split)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True, random_state=42) #, random_state=42
-print(len(X_train), len(X_test), len(y_train), len(y_test))
+# print(len(X_train), len(X_test), len(y_train), len(y_test))
 
 # Train the SVM classifier
 svm_classifier = SVC(kernel='linear')
