@@ -11,7 +11,7 @@ from starter import X_processed, X_masked
 
 # 将正常和带面具的数据合并
 
-X = np.concatenate((X_processed, X_masked))
+X = np.concatenate([X_processed, X_masked])
 y = ['no_mask'] * len(X_processed) + ['mask'] * len(X_masked)
 
 
