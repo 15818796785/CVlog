@@ -46,17 +46,12 @@ for x_list in tqdm.tqdm(X, desc='adding masks'):
     for x in x_list:
         dets = detector(x, 1)
         if len(dets) == 0:
-            print('no featrues')
-        for k, d in enumerate(dets):
-            shape = predictor(x, d)
-            landmarks = np.array([[p.x, p.y] for p in shape.parts()])
-            masked_face = add_mask(x, landmarks)
-            # cv2.imwrite('path_to_save_maskedface.jpg', masked_face)
-            # cv2.imshow('Resized Image', masked_face)
-            # cv2.waitKey(0)  # 等待用户按键
-            # cv2.destroyAllWindows()  #
-            # dlib.hit_enter_to_continue()
-            temp_X_masked.append(masked_face)
+            break
+        d = dets[0]
+        shape = predictor(x, d)
+        landmarks = np.array([[p.x, p.y] for p in shape.parts()])
+        masked_face = add_mask(x, landmarks)
+        temp_X_masked.append(masked_face)
     X_masked.append(temp_X_masked)
 
 Masked_dataset_path = "GeorgiaTechFaces/Maskedset_1"
@@ -83,15 +78,6 @@ for i in tqdm.tqdm(range(len(X)), desc='preprocessing images '):
         gray_image = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
         # 计算直方图
         hist, bins = np.histogram(gray_image.flatten(), bins=256, range=[0, 256])
-
-        # plt.figure()
-        # plt.title("Grayscale Histogram")
-        # plt.xlabel("Gray level")
-        # plt.ylabel("Frequency")
-        # plt.plot(hist)
-        # plt.xlim([0, 256])
-        # plt.show()
-        # dlib.hit_enter_to_continue()
 
         # append the converted image into temp_X_processed
         temp_X_maskprocessed.append(gray_image)
