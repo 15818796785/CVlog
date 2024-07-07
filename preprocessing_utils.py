@@ -23,6 +23,7 @@ def crop_and_resize_face(img, detector, predictor):
         # Detect faces
         dets = detector(img_rgb, 1)
         if len(dets) == 0:
+            print('no faces detected')
             return None  # No faces detected
 
         # Process the first detected face
@@ -58,3 +59,39 @@ def crop_and_resize_face(img, detector, predictor):
 
 
 # 使用方法
+import cv2
+import numpy as np
+
+
+#高斯模糊
+def apply_gaussian_blur(image, kernel_size=(5, 5), sigma=0):
+    return cv2.GaussianBlur(image, kernel_size, sigma)
+
+
+#转换颜色空间
+def convert_to_grayscale(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+def convert_to_hsv(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+def convert_to_lab(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2Lab)
+
+
+#边缘检测
+def apply_edge_detection(image):
+    return cv2.Canny(image, 100, 200)
+
+#数据增强
+def random_rotate(image):
+    angle = np.random.uniform(-30, 30)  # 随机角度
+    h, w = image.shape[:2]
+    M = cv2.getRotationMatrix2D((w/2, h/2), angle, 1)
+    return cv2.warpAffine(image, M, (w, h))
+
+def random_scale(image):
+    fx = fy = np.random.uniform(0.8, 1.2)  # 随机缩放比例
+    return cv2.resize(image, None, fx=fx, fy=fy)
+
+

@@ -2,6 +2,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 from skimage.feature import hog
+import face_recognition
 import tqdm
 import os
 import cv2
@@ -77,7 +78,7 @@ X = X_masked_flat + X_processed_flat
 y = y_masked + y_processed
 
 # Split the dataset into training and testing sets (80-20 split)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1475, shuffle=True, random_state=42) #, random_state=42
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True, random_state=42) #, random_state=42
 print(len(X_train), len(X_test), len(y_train), len(y_test))
 
 # Train the SVM classifier
