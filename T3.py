@@ -45,6 +45,8 @@ for x_list in tqdm.tqdm(X_processed, desc='adding masks'):
     temp_X_masked = []
     for x in x_list:
         dets = detector(x, 1)
+        if len(dets) == 0:
+            print("no featrues")
         for k, d in enumerate(dets):
             shape = predictor(x, d)
             landmarks = np.array([[p.x, p.y] for p in shape.parts()])
