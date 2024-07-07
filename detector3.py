@@ -48,13 +48,14 @@ def crop_and_resize_face(img, img_masked, detector, predictor):
         y_max = max([shape.part(i).y for i in range(shape.num_parts)])
 
         # Crop and resize
-        cropped_face = img_masked[y_min:y_max, x_min:x_max]
+        cropped_maskedface = img_masked[y_min:y_max, x_min:x_max]
+        cropped_face = img[y_min:y_max, x_min:x_max]
         resized_face = cv2.resize(cropped_face, (150, 150))
-
+        resized_maskedface = cv2.resize(cropped_maskedface, (150, 150))
         # 显示检测到的人脸
 
 
-        return resized_face
+        return resized_face, resized_maskedface
 
 
 
