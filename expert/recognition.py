@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import OneClassSVM
 from tqdm import tqdm
 
-processedset_path = "../GeorgiaTechFaces/Processedset_1"
+processedset_path = "../GeorgiaTechFaces/ConvertLabprocessedset_1"
 
 X = []
 y = []

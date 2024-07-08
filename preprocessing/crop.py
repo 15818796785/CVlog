@@ -15,8 +15,8 @@ import tqdm
 # change the dataset path here according to your folder structure
 
 
-dataset_path = "GeorgiaTechFaces/Dataset_1"
-predictor_path = 'shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
+dataset_path = "../GeorgiaTechFaces/Dataset_1"
+predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
 
@@ -35,7 +35,7 @@ for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
         # add the temp_x_list to X
         X.append(temp_x_list)
 
-dataset_path = 'GeorgiaTechFaces/Maskedset_1'
+dataset_path = '../GeorgiaTechFaces/Maskedset_1'
 X_masked = []
 for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
     if os.path.isdir(os.path.join(dataset_path, subject_name)):
@@ -88,14 +88,14 @@ for i in tqdm.tqdm(range(len(X)), desc='preprocessing images '):
     X_maskprocessed.append(temp_X_maskprocessed)
    
 # Save the processed images
-maskprocessed_dataset_path = 'GeorgiaTechFaces/Maskedcrop_1'
+maskprocessed_dataset_path = '../GeorgiaTechFaces/Maskedcrop_1'
 for i, subject_images in enumerate(X_maskprocessed):
     subject_folder = os.path.join(maskprocessed_dataset_path, f"s{str(i + 1).zfill(2)}")
     os.makedirs(subject_folder, exist_ok=True)
     for j, img in enumerate(subject_images):
         cv2.imwrite(os.path.join(subject_folder, f"{str(j + 1).zfill(2)}.jpg"), img)
 
-processed_dataset_path = 'GeorgiaTechFaces/Crop_1'
+processed_dataset_path = '../GeorgiaTechFaces/Crop_1'
 for i, subject_images in enumerate(X_processed):
     subject_folder = os.path.join(processed_dataset_path, f"s{str(i + 1).zfill(2)}")
     os.makedirs(subject_folder, exist_ok=True)

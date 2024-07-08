@@ -6,9 +6,9 @@ import cv2
 import os
 import tqdm
 
-dataset_path = "GeorgiaTechFaces/Dataset_1"
-maskeddataset_path = "GeorgiaTechFaces/Maskedset_1"
-predictor_path = 'shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
+dataset_path = "../GeorgiaTechFaces/Dataset_1"
+maskeddataset_path = "../GeorgiaTechFaces/Maskedset_1"
+predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
 
@@ -97,7 +97,7 @@ for i in tqdm.tqdm(range(len(X)), desc='preprocessing images '):
     X_processed.append(temp_X_processed)
     X_maskprocessed.append(temp_X_maskprocessed)
 
-X_RandomRotate_dataset_path = 'GeorgiaTechFaces/RandomRotateprocessedset_1'
+X_RandomRotate_dataset_path = '../GeorgiaTechFaces/RandomRotateprocessedset_1'
 for i, subject_images in enumerate(X_processed):
     subject_folder = os.path.join(X_RandomRotate_dataset_path, f"s{str(i + 1).zfill(2)}")
     os.makedirs(subject_folder, exist_ok=True)
@@ -107,7 +107,7 @@ for i, subject_images in enumerate(X_processed):
         except Exception as e:
             continue
 
-X_masked_RandomRotate_dataset_path = 'GeorgiaTechFaces/RandomRotateMaskprocessedset_1'
+X_masked_RandomRotate_dataset_path = '../GeorgiaTechFaces/RandomRotateMaskprocessedset_1'
 for i, subject_images in enumerate(X_maskprocessed):
     subject_folder = os.path.join(X_masked_RandomRotate_dataset_path, f"s{str(i + 1).zfill(2)}")
     os.makedirs(subject_folder, exist_ok=True)
