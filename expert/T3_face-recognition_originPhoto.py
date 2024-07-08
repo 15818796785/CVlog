@@ -8,6 +8,7 @@ import os
 import cv2
 import numpy as np
 import random
+import time
 
 processedset_path = "GeorgiaTechFaces/Maskedgray_1"
 
@@ -72,16 +73,30 @@ for employee_images in X_test:
     select_num = random.randint(10, len(employee_images) - 1)
     image = employee_images[select_num]
     probe_encoding = face_recognition.face_encodings(image)
+    start_time = time.time()
     while probe_encoding == [] and select_num < len(employee_images):
         # select_num += 1
         select_num = random.randint(10, len(employee_images) - 1)
         image = employee_images[select_num]
         probe_encoding = face_recognition.face_encodings(image)
+        end_time = time.time()
+        if end_time - start_time > 5:
+            break
     for encoding in employee_encodings:
+        if probe_encoding == []:
+            break
         encoding = np.array(encoding)
         # change the tolerance value here to get the best result
-        results = face_recognition.compare_faces(encoding, probe_encoding, tolerance=0.5)
+        results = face_recognition.compare_faces(encoding, probe_encoding, tolerance=0.25)
+        # use break
+        # 0.3 68%
+        # 0.4 74%
+        # 0.5 66%
         # print(results)
+        # not use break
+        # 0.25 100%
+        # 0.3 92%
+        # 0.4 68%
         if len(results) and results[0]:
             if flag == 0:
                 print("ACCEPT")
