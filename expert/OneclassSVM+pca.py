@@ -3,13 +3,14 @@ import os
 import cv2
 
 from skimage.feature import hog
+from sklearn.decomposition import PCA
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import OneClassSVM
 from tqdm import tqdm
 
-processedset_path = "../GeorgiaTechFaces/ConvertLabprocessedset_1"
+processedset_path = "../GeorgiaTechFaces/Maskedcrop_1"
 
 X = []
 y = []
@@ -70,6 +71,11 @@ from sklearn.metrics import make_scorer, roc_auc_score
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(employee_features)
 
+# 初始化 PCA，选择主成分的数量，例如2个
+pca = PCA(n_components=2)
+
+# 对标准化后的数据进行 PCA 转换
+data_pca = pca.fit_transform(X_train_scaled)
 
 param_grid = {
     'nu': [0.01, 0.05, 0.1, 0.2, 0.5],
@@ -79,13 +85,13 @@ param_grid = {
 
 
 # 创建 OneClassSVM 对象
-oc_svm = OneClassSVM()
+oc_svm = OneClassSVM(gamma=0.001)
 oc_svm.fit(X_train_scaled)
 
 
 # 在测试数据上进行预测
 X_test_scaled = scaler.transform(employee_features + outsider_features)
-y_pred = oc_svm.predict(X_test_scaled)
+y_pred = oc_svm.predict(data_pca)
 y_pred = ['Accepted' if x == 1 else 'Rejected' for x in y_pred]
 
 # 输出预测结果
