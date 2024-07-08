@@ -36,7 +36,7 @@ X = []
 y = []
 X_train = []
 
-processedset_path = "../GeorgiaTechFaces/Maskedcrop_1"
+processedset_path = "../GeorgiaTechFaces/ConvertGrayscaleMaskprocessedset_1"
 
 for subject_name in tqdm(os.listdir(processedset_path), desc='reading processed images'):
     if os.path.isdir(os.path.join(processedset_path, subject_name)):
@@ -59,6 +59,13 @@ y_test = y_test_employee + y_test_outsider
 
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(employee_features)
+
+
+
+
+
+
+
 
 
 
@@ -111,8 +118,3 @@ accuracy = accuracy_score(y_test, y_pred)
 print(f"One class SGD Model accuracy: {accuracy * 100:.2f}%")
 
 
-
-
-
-
-#############################
