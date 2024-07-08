@@ -72,7 +72,7 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(employee_features)
 
 # 初始化 PCA，选择主成分的数量，例如2个
-pca = PCA(n_components=2)
+pca = PCA(n_components=6)
 
 # 对标准化后的数据进行 PCA 转换
 data_pca = pca.fit_transform(X_train_scaled)
@@ -86,12 +86,13 @@ param_grid = {
 
 # 创建 OneClassSVM 对象
 oc_svm = OneClassSVM(gamma=0.001)
-oc_svm.fit(X_train_scaled)
+oc_svm.fit(data_pca)
 
 
 # 在测试数据上进行预测
 X_test_scaled = scaler.transform(employee_features + outsider_features)
-y_pred = oc_svm.predict(data_pca)
+X_test_pca = pca.transform(X_test_scaled)
+y_pred = oc_svm.predict(X_test_pca)
 y_pred = ['Accepted' if x == 1 else 'Rejected' for x in y_pred]
 
 # 输出预测结果
