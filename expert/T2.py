@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 import random
 
-processedset_path = "../GeorgiaTechFaces/Processedset_1"
+processedset_path = "GeorgiaTechFaces/Processedset_1"
 
 X_processed = []
 y = []
@@ -44,13 +44,13 @@ for employee_images in tqdm.tqdm(X_employee, desc='employee training'):
         employee_encoding = face_recognition.face_encodings(image)
         employee_encodings.append(employee_encoding)
         # use one picture to train for one person
-        # break
+        break
 
 y_employee = [1] * len(X_employee)
 y_outsider = [0] * len(X_outsider)
 y = y_employee + y_outsider
 
-X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=0.75, shuffle=True, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=0.8, shuffle=True, random_state=42)
 print(f"Training set size: {len(y_train)}", f"Test set size: {len(y_test)}")
 y_probe = []
 
@@ -60,11 +60,18 @@ for employee_images in X_test:
     print(f"Processing image {order}")
     order += 1
     flag = 0
-    image = employee_images[0]
+    # select_num = 0
+    select_num = random.randint(10, len(employee_images) - 1)
+    image = employee_images[select_num]
     probe_encoding = face_recognition.face_encodings(image)
+    while probe_encoding == [] and select_num < len(employee_images):
+        # select_num += 1
+        select_num = random.randint(10, len(employee_images) - 1)
+        image = employee_images[select_num]
+        probe_encoding = face_recognition.face_encodings(image)
     for encoding in employee_encodings:
         encoding = np.array(encoding)
-        results = face_recognition.compare_faces(encoding, probe_encoding)
+        results = face_recognition.compare_faces(encoding, probe_encoding, tolerance=0.5)
         # print(results)
         if len(results) and results[0]:
             if flag == 0:
