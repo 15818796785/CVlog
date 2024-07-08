@@ -51,11 +51,6 @@ for x_list in tqdm.tqdm(X, desc='adding masks'):
             shape = predictor(x, d)
             landmarks = np.array([[p.x, p.y] for p in shape.parts()])
             masked_face = add_mask(x, landmarks)
-            # cv2.imwrite('path_to_save_maskedface.jpg', masked_face)
-            # cv2.imshow('Resized Image', masked_face)
-            # cv2.waitKey(0)  # 等待用户按键
-            # cv2.destroyAllWindows()  #
-            # dlib.hit_enter_to_continue()
             temp_X_masked.append(masked_face)
     X_masked.append(temp_X_masked)
 
@@ -86,15 +81,6 @@ for i in tqdm.tqdm(range(len(X)), desc='preprocessing images '):
         # 计算直方图
         hist, bins = np.histogram(gray_image.flatten(), bins=256, range=[0, 256])
 
-        # plt.figure()
-        # plt.title("Grayscale Histogram")
-        # plt.xlabel("Gray level")
-        # plt.ylabel("Frequency")
-        # plt.plot(hist)
-        # plt.xlim([0, 256])
-        # plt.show()
-        # dlib.hit_enter_to_continue()
-
         # append the converted image into temp_X_processed
         temp_X_processed.append(gray_image)
         temp_X_maskprocessed.append(gray_mask_image)
@@ -117,41 +103,6 @@ for i, subject_images in enumerate(X_processed):
     os.makedirs(subject_folder, exist_ok=True)
     for j, img in enumerate(subject_images):
         cv2.imwrite(os.path.join(subject_folder, f"{str(j + 1).zfill(2)}.jpg"), img)
-# print("finished T3")
-# X_processed = []
-# for x_list in tqdm.tqdm(X, desc='preprocessing images '):
-#     temp_X_processed = []
-#     for x in x_list:
-#         # write the code to detect face in the image (x) using dlib facedetection library
-#         # write the code to crop the image (x) to keep only the face, resize the cropped image to 150x150
+print("finished T3")
 
-#         temp_img = detector2.crop_and_resize_face(x, detector, predictor)
-
-#         # cv2.imwrite('path_to_save_image.jpg', temp_img)
-#         # cv2.imshow('Resized Image', temp_img)
-#         # cv2.waitKey(0)  # 等待用户按键
-#         # cv2.destroyAllWindows()  #
-#         # dlib.hit_enter_to_continue()
-
-#         # write the code to convert the image (x) to grayscale
-#         gray_image = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
-#         # 计算直方图
-#         hist, bins = np.histogram(gray_image.flatten(), bins=256, range=[0, 256])
-
-#         # plt.figure()
-#         # plt.title("Grayscale Histogram")
-#         # plt.xlabel("Gray level")
-#         # plt.ylabel("Frequency")
-#         # plt.plot(hist)
-#         # plt.xlim([0, 256])
-#         # plt.show()
-#         # dlib.hit_enter_to_continue()
-
-#         # append the converted image into temp_X_processed
-#         temp_X_processed.append(gray_image)
-
-#     # append temp_X_processed into  X_processed
-#     X_processed.append(temp_X_processed)
-
-# Save the processed images
 
