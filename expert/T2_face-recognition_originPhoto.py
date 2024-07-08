@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 import random
 
-processedset_path = "GeorgiaTechFaces/Processedset_1"
+processedset_path = "GeorgiaTechFaces/Maskedgray_1"
 
 X_processed = []
 y = []
@@ -30,6 +30,10 @@ random.shuffle(X_processed)
 X_employee = X_processed[0:30]
 X_outsider = X_processed[30:]
 
+# image = face_recognition.load_image_file("image.jpg")
+# face_locations = face_recognition.face_locations(image)
+# print(f"Found {len(face_locations)} face(s) in this image")
+# face_encodings = face_recognition.face_encodings(image, face_locations)
 
 # Train a face recognizer on the Employee set
 employee_encodings = []
@@ -37,18 +41,18 @@ employee_encodings = []
 # for employee_images in X_employee:
 for employee_images in tqdm.tqdm(X_employee, desc='employee training'):
     for image in employee_images:
-        employee_encoding = face_recognition.face_encodings(image)
+        face_locations = face_recognition.face_locations(image)
+        employee_encoding = face_recognition.face_encodings(image, face_locations)
         if employee_encoding != []:
             employee_encodings.append(employee_encoding)
         # use one picture to train for one person
-        break
-# print("employee_encodings_size", len(employee_encodings)) size=437
+        # break
+    
+print("employee_encodings_size", len(employee_encodings)) 
+# size=364/450
 y_employee = [1] * len(X_employee)
 y_outsider = [0] * len(X_outsider)
 y = y_employee + y_outsider
-
-# X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=0.8, shuffle=True, random_state=42)
-# print(f"Training set size: {len(y_train)}", f"Test set size: {len(y_test)}")
 
 # shuffle the test set
 zipped = list(zip(X_processed, y))
@@ -57,8 +61,8 @@ X_shuffled, y_shuffled = zip(*zipped)
 X_test = list(X_shuffled)
 y_test = list(y_shuffled)
 
-order = 1
 y_probe = []
+order = 1
 
 for employee_images in X_test:
     print(f"Processing image {order}")
