@@ -13,11 +13,6 @@ processedset_path = "GeorgiaTechFaces/Processedset_1"
 
 X_processed = []
 y = []
-
-# image = face_recognition.load_image_file("image.jpg")
-# face_locations = face_recognition.face_locations(image)
-# print(f"Found {len(face_locations)} face(s) in this image")
-# face_encodings = face_recognition.face_encodings(image, face_locations)
         
 for subject_name in tqdm.tqdm(os.listdir(processedset_path), desc='reading processed images'):
     if os.path.isdir(os.path.join(processedset_path, subject_name)):
@@ -71,6 +66,7 @@ for employee_images in X_test:
         probe_encoding = face_recognition.face_encodings(image)
     for encoding in employee_encodings:
         encoding = np.array(encoding)
+        # change the tolerance value here to get the best result
         results = face_recognition.compare_faces(encoding, probe_encoding, tolerance=0.5)
         # print(results)
         if len(results) and results[0]:
@@ -87,25 +83,7 @@ for employee_images in X_test:
 
 print("y_probe", y_probe)
 print("y_test", y_test)
+
 # Evaluate the classifier
 accuracy = accuracy_score(y_test, y_probe)
 print(f"Accuracy: {accuracy * 100:.2f}%")
-
-# model = SVC(kernel='linear', probability=True)
-# model.fit(employee_encodings, ['ACCEPT'] * len(employee_encodings))
-
-# # Evaluate the model on the Employee and Outsider sets
-# total_images = 0
-# correct_predictions = 0
-# for images in X_employee + X_outsider:
-#     for image in images:
-#         total_images += 1
-#         probe_encoding = face_recognition.face_encodings(image)[0]
-#         prediction = model.predict([probe_encoding])[0]
-#         if prediction == 'ACCEPT' and images in X_employee:
-#             correct_predictions += 1
-#         elif prediction == 'REJECTED' and images in X_outsider:
-#             correct_predictions += 1
-
-# accuracy = correct_predictions / total_images
-# print(f'Accuracy: {accuracy:.2f}')
