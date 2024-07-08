@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 import random
 
-processedset_path = "../GeorgiaTechFaces/Processedset_1"
+processedset_path = "GeorgiaTechFaces/Processedset_1"
 
 X_processed = []
 y = []
@@ -39,7 +39,7 @@ for employee_images in tqdm.tqdm(X_employee, desc='employee training'):
         employee_encoding = face_recognition.face_encodings(image)
         employee_encodings.append(employee_encoding)
         # use one picture to train for one person
-        # break
+        break
 
 y_employee = [1] * len(X_employee)
 y_outsider = [0] * len(X_outsider)
