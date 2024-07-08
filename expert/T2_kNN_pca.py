@@ -33,6 +33,13 @@ X_outsider = [X_processed[i] for i in range(len(y)) if y[i] == 0]
 X_test = X_processed
 y_test = y
 
+# 应用PCA进行降维
+from sklearn.decomposition import PCA
+
+pca = PCA(n_components=50)  # 保留50个主成分，可以根据实际情况调整
+X_employee_pca = pca.fit_transform(X_employee)
+X_test_pca = pca.transform(X_test)
+
 # 定义 k 值的范围
 k_values = [1, 3, 5, 7, 9]
 accuracies = []
@@ -40,13 +47,13 @@ accuracies = []
 # 训练并测试 one-class kNN 模型
 for k in k_values:
     knn = NearestNeighbors(n_neighbors=k)
-    knn.fit(X_employee)
+    knn.fit(X_employee_pca)
 
     y_pred = []
-    for x in X_test:
+    for x in X_test_pca:
         distances, indices = knn.kneighbors([x])
         # 如果最近的邻居属于员工，则接受，否则拒绝
-        if np.mean(distances) < np.mean(knn.kneighbors(X_employee)[0]):
+        if np.mean(distances) < np.mean(knn.kneighbors(X_employee_pca)[0]):
             y_pred.append(1)  # ACCEPT
         else:
             y_pred.append(0)  # REJECT
