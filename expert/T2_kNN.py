@@ -7,7 +7,7 @@ from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 import tqdm
 
-processedset_path = "../GeorgiaTechFaces/Maskprocessedset_1"
+processedset_path = "../GeorgiaTechFaces/Maskedcrop_1"
 
 X_processed = []
 y = []
@@ -68,7 +68,7 @@ plt.ylabel("Accuracy")
 plt.title("Accuracy vs Number of Neighbors (k) for Face Recognition")
 plt.grid()
 
-save_path = "../Accuracy"
-plot_save_path = os.path.join(save_path, "kNN_Maskprocessedset_1_k_vs_accuracy.png")
+save_path = "../Accuracy/kNN"
+plot_save_path = os.path.join(save_path, "kNN_Maskedcrop_1_k_vs_accuracy.png")
 plt.savefig(plot_save_path)
 plt.show()
