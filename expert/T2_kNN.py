@@ -39,7 +39,7 @@ accuracies = []
 
 # 训练并测试 one-class kNN 模型
 for k in k_values:
-    knn = NearestNeighbors(n_neighbors=k)
+    knn = NearestNeighbors(n_neighbors=k, algorithm='auto', leaf_size=30, metric='minkowski', p=1)
     knn.fit(X_employee)
 
     y_pred = []
@@ -68,7 +68,7 @@ plt.ylabel("Accuracy")
 plt.title("Accuracy vs Number of Neighbors (k) for Face Recognition")
 plt.grid()
 
-save_path = "../Accuracy/kNN"
+save_path = "../Accuracy/kNN/p=1"
 plot_save_path = os.path.join(save_path, "kNN_Maskedcrop_1_k_vs_accuracy.png")
 plt.savefig(plot_save_path)
 plt.show()
