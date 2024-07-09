@@ -67,4 +67,8 @@ plt.xlabel("Number of Neighbors (k)")
 plt.ylabel("Accuracy")
 plt.title("Accuracy vs Number of Neighbors (k) for Face Recognition")
 plt.grid()
+
+save_path = "../Accuracy"
+plot_save_path = os.path.join(save_path, "kNN_Maskprocessedset_1_k_vs_accuracy.png")
+plt.savefig(plot_save_path)
 plt.show()
