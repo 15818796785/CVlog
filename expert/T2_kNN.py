@@ -7,7 +7,7 @@ from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 import tqdm
 
-processedset_path = "../GeorgiaTechFaces/Maskedcrop_1"
+processedset_path = "../GeorgiaTechFaces/Crop_1"
 
 X_processed = []
 y = []
@@ -35,40 +35,44 @@ y_test = y
 
 # 定义 k 值的范围
 k_values = [1, 3, 5, 7, 9]
+metric_values = ['minkowski', 'euclidean', 'manhattan', 'chebyshev', 'cosine', 'hamming']
 accuracies = []
 
 # 训练并测试 one-class kNN 模型
 for k in k_values:
-    knn = NearestNeighbors(n_neighbors=k, algorithm='auto', leaf_size=30, metric='minkowski', p=1)
-    knn.fit(X_employee)
+    for m in metric_values:
+        knn = NearestNeighbors(n_neighbors=k, algorithm='ball_tree', leaf_size=30, metric=m)
+        knn.fit(X_employee)
 
-    y_pred = []
-    for x in X_test:
-        distances, indices = knn.kneighbors([x])
-        # 如果最近的邻居属于员工，则接受，否则拒绝
-        if np.mean(distances) < np.mean(knn.kneighbors(X_employee)[0]):
-            y_pred.append(1)  # ACCEPT
-        else:
-            y_pred.append(0)  # REJECT
+        y_pred = []
+        for x in X_test:
+            distances, indices = knn.kneighbors([x])
+            # 如果最近的邻居属于员工，则接受，否则拒绝
+            if np.mean(distances) < np.mean(knn.kneighbors(X_employee)[0]):
+                y_pred.append(1)  # ACCEPT
+            else:
+                y_pred.append(0)  # REJECT
 
-    # 将预测结果转换为接受或拒绝
-    y_pred_accept_reject = ["ACCEPT" if pred == 1 else "REJECT" for pred in y_pred]
-    y_test_accept_reject = ["ACCEPT" if true == 1 else "REJECT" for true in y_test]
+        # 将预测结果转换为接受或拒绝
+        y_pred_accept_reject = ["ACCEPT" if pred == 1 else "REJECT" for pred in y_pred]
+        y_test_accept_reject = ["ACCEPT" if true == 1 else "REJECT" for true in y_test]
 
-    # 计算准确率
-    accuracy = np.mean(np.array(y_pred_accept_reject) == np.array(y_test_accept_reject))
-    accuracies.append(accuracy)
-    print(f"k: {k}, Accuracy: {accuracy:.3f}")
+        # 计算准确率
+        accuracy = np.mean(np.array(y_pred_accept_reject) == np.array(y_test_accept_reject))
+        accuracies.append(accuracy)
+        print(f"k: {k}, matric: {m}, Accuracy: {accuracy:.3f}")
 
 # 绘制 k 值与准确率的关系
-plt.figure(figsize=(8, 6))
-plt.plot(k_values, accuracies, marker='o')
+plt.figure(figsize=(12, 8))
+for j, metric in enumerate(metric_values):
+    plt.plot(k_values, accuracies[:, j], marker='o', label=f'Metric={metric}')
 plt.xlabel("Number of Neighbors (k)")
 plt.ylabel("Accuracy")
-plt.title("Accuracy vs Number of Neighbors (k) for Face Recognition")
+plt.title("Accuracy vs Number of Neighbors (k) for Different Metrics")
+plt.legend()
 plt.grid()
 
-save_path = "../Accuracy/kNN/p=1"
-plot_save_path = os.path.join(save_path, "kNN_Maskedcrop_1_k_vs_accuracy.png")
+save_path = "../Accuracy/kNN"
+plot_save_path = os.path.join(save_path, "kNN_Crop_1_k_vs_accuracy.png")
 plt.savefig(plot_save_path)
 plt.show()
