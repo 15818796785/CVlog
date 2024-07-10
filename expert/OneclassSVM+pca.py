@@ -10,7 +10,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import OneClassSVM
 from tqdm import tqdm
 
-processedset_path = "../GeorgiaTechFaces/Maskedcrop_1"
+processedset_path = "../GeorgiaTechFaces/Dataset_1"
 
 X = []
 y = []
@@ -25,8 +25,7 @@ for subject_name in tqdm(os.listdir(processedset_path), desc='reading processed 
                 img_path = os.path.join(subject_images_dir, img_name)
                 img = cv2.imread(img_path, flags=0)
                 # gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                x_feature = hog(img, orientations=8, pixels_per_cell=(10, 10),
-                                cells_per_block=(1, 1), visualize=False)
+                x_feature = hog(img, orientations=8, pixels_per_cell=(10, 10),cells_per_block=(1, 1), visualize=False)
                 X.append(x_feature)
 
 employee_features = X[:450]
@@ -85,7 +84,7 @@ param_grid = {
 
 
 # 创建 OneClassSVM 对象
-oc_svm = OneClassSVM(gamma=0.001)
+oc_svm = OneClassSVM(gamma=2,nu=0.01,kernel='rbf')
 oc_svm.fit(data_pca)
 
 

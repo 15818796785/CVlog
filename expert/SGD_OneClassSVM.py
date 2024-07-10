@@ -36,7 +36,7 @@ X = []
 y = []
 X_train = []
 
-processedset_path = "../GeorgiaTechFaces/ConvertGrayscaleMaskprocessedset_1"
+processedset_path = "../GeorgiaTechFaces/Dataset_1"
 
 for subject_name in tqdm(os.listdir(processedset_path), desc='reading processed images'):
     if os.path.isdir(os.path.join(processedset_path, subject_name)):
@@ -71,7 +71,7 @@ X_train_scaled = scaler.fit_transform(employee_features)
 
 
 # OCSVM hyperparameters
-nu = 0.05
+nu = 0.01
 gamma = 2.0
 
 # Fit the One-Class SVM
