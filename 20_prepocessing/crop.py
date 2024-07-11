@@ -53,10 +53,12 @@ for i in tqdm.tqdm(range(len(X)), desc='preprocessing images '):
 # Save the processed images
 maskprocessed_dataset_path = '../GeorgiaTechFaces/Maskedcrop_1'
 for i, img in enumerate(X_masked):
-    cv2.imwrite(os.path.join(maskprocessed_dataset_path, f"{str(i + 1).zfill(2)}.jpg"), img)
+    img_save_path = os.path.join(maskprocessed_dataset_path, f"{str(i + 1).zfill(5)}.jpg")
+    cv2.imwrite(img_save_path, img)
 
 processed_dataset_path = '../GeorgiaTechFaces/Crop_1'
 for i, img in enumerate(X_masked):
-    cv2.imwrite(os.path.join(processed_dataset_path, f"{str(i + 1).zfill(2)}.jpg"), img)
+    img_save_path = os.path.join(processed_dataset_path, f"{str(i + 1).zfill(5)}.jpg")
+    cv2.imwrite(img_save_path, img)
 
 
