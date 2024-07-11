@@ -8,19 +8,23 @@ from skimage.feature import hog
 import cv2
 import tqdm
 
-dataset_path = "../img_align_celeba/img_align_celeba"
+dataset_path = "../20_GeorgiaTechFaces/img_align_celeba/img_align_celeba"
 predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
 
 X = []
+count = 0
 for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-    # write code to read each 'img'
     if img_name.endswith('.jpg'):
-        img_path = os.path.join(dataset_path, img_name)
-        img = cv2.imread(img_name)
-        # add the img to temp_x_list
-        X.append(img)
+        count += 1
+        if count % 10 == 0:  # 每隔十个图片读取一张
+            img_path = os.path.join(dataset_path, img_name)
+            img = cv2.imread(img_path)
+            if img is not None:
+                X.append(img)
+            if len(X) >= 20000:  # 达到20000张图片时结束
+                break
 # add the temp_x_list to X
 
 def add_mask(image, landmarks):

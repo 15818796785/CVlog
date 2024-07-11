@@ -6,7 +6,6 @@ from matplotlib import pyplot as plt
 from skimage.feature import hog
 # import more libraries as you need
 import cv2
-import detector2
 import tqdm
 
 # T1  start _______________________________________________________________________________
@@ -63,21 +62,6 @@ for i in tqdm.tqdm(range(len(X)), desc='preprocessing images '):
         # write the code to crop the image (x) to keep only the face, resize the cropped image to 150x150
 
         temp_img, temp_maskimg = detector3.crop_and_resize_face(x_list[j], x_masklist[j], detector, predictor)
-
-        # write the code to convert the image (x) to grayscale
-        # gray_image = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
-        # gray_mask_image = cv2.cvtColor(temp_maskimg, cv2.COLOR_BGR2GRAY)
-        # 计算直方图
-        # hist, bins = np.histogram(gray_image.flatten(), bins=256, range=[0, 256])
-
-        # plt.figure()
-        # plt.title("Grayscale Histogram")
-        # plt.xlabel("Gray level")
-        # plt.ylabel("Frequency")
-        # plt.plot(hist)
-        # plt.xlim([0, 256])
-        # plt.show()
-        # dlib.hit_enter_to_continue()
 
         # append the converted image into temp_X_processed
         temp_X_processed.append(temp_img)
