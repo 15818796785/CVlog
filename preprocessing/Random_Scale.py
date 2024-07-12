@@ -44,16 +44,16 @@ X_RandomScale = []
 for x_list in tqdm.tqdm(X, desc='adding masks'):
     temp_X_blured = []
     for x in x_list:
-        blured_face = preprocessing_utils.random_scale(x)
-        temp_X_blured.append(blured_face)
+        scale_face = preprocessing_utils.random_scale(x)
+        temp_X_blured.append(scale_face)
     X_RandomScale.append(temp_X_blured)
 
 X_masked_RandomScale = []
 for x_list in tqdm.tqdm(X_masked, desc='adding masks'):
     temp_X_blured = []
     for x in x_list:
-        blured_face = preprocessing_utils.random_scale(x)
-        temp_X_blured.append(blured_face)
+        scale_face = preprocessing_utils.random_scale(x)
+        temp_X_blured.append(scale_face)
     X_masked_RandomScale.append(temp_X_blured)
 
 X_RandomScale_dataset_path = '../GeorgiaTechFaces/RandomScaleprocessedset_1'

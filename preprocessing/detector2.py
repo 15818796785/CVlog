@@ -6,7 +6,7 @@ import cv2
 from matplotlib import pyplot as plt
 
 
-def crop_and_resize_face(img, img_masked, detector, predictor):
+def crop_and_resize_face(img, detector, predictor):
         """
         Detect the face, extract facial landmarks, crop the face region, and resize the image.
 
@@ -23,8 +23,7 @@ def crop_and_resize_face(img, img_masked, detector, predictor):
         # Detect faces
         dets = detector(img_rgb, 1)
         if len(dets) == 0:
-            print('no faces detected')
-            return None, None  # No faces detected
+            return None  # No faces detected
 
         # Process the first detected face
         d = dets[0]  # Assuming the first detected face is the subject
@@ -48,13 +47,13 @@ def crop_and_resize_face(img, img_masked, detector, predictor):
         y_max = max([shape.part(i).y for i in range(shape.num_parts)])
 
         # Crop and resize
-        cropped_maskedface = img_masked[y_min:y_max, x_min:x_max]
         cropped_face = img[y_min:y_max, x_min:x_max]
         resized_face = cv2.resize(cropped_face, (150, 150))
-        resized_maskedface = cv2.resize(cropped_maskedface, (150, 150))
+
         # 显示检测到的人脸
 
-        return resized_face, resized_maskedface
+
+        return resized_face
 
 
 

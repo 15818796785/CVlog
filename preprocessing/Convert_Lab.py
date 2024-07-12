@@ -44,16 +44,16 @@ X_ConvertLab = []
 for x_list in tqdm.tqdm(X, desc='convert Lab'):
     temp_X_blured = []
     for x in x_list:
-        blured_face = preprocessing_utils.convert_to_lab(x)
-        temp_X_blured.append(blured_face)
+        lab_face = preprocessing_utils.convert_to_lab(x)
+        temp_X_blured.append(lab_face)
     X_ConvertLab.append(temp_X_blured)
 
 X_masked_ConvertLab = []
 for x_list in tqdm.tqdm(X_masked, desc='convert Lab'):
     temp_X_blured = []
     for x in x_list:
-        blured_face = preprocessing_utils.convert_to_lab(x)
-        temp_X_blured.append(blured_face)
+        lab_face = preprocessing_utils.convert_to_lab(x)
+        temp_X_blured.append(lab_face)
     X_masked_ConvertLab.append(temp_X_blured)
 
 X_ConvertLab_dataset_path = '../GeorgiaTechFaces/ConvertLabprocessedset_1'

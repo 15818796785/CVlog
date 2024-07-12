@@ -44,16 +44,16 @@ X_EdgeDetection = []
 for x_list in tqdm.tqdm(X, desc='edge detection'):
     temp_X_blured = []
     for x in x_list:
-        blured_face = preprocessing_utils.apply_edge_detection(x)
-        temp_X_blured.append(blured_face)
+        edge_face = preprocessing_utils.apply_edge_detection(x)
+        temp_X_blured.append(edge_face)
     X_EdgeDetection.append(temp_X_blured)
 
 X_masked_EdgeDetection = []
 for x_list in tqdm.tqdm(X_masked, desc='edge detection'):
     temp_X_blured = []
     for x in x_list:
-        blured_face = preprocessing_utils.apply_edge_detection(x)
-        temp_X_blured.append(blured_face)
+        edge_face = preprocessing_utils.apply_edge_detection(x)
+        temp_X_blured.append(edge_face)
     X_masked_EdgeDetection.append(temp_X_blured)
 
 X_EdgeDetection_dataset_path = '../GeorgiaTechFaces/EdgeDetectionprocessedset_1'

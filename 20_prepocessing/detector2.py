@@ -7,6 +7,8 @@ from matplotlib import pyplot as plt
 
 
 def crop_and_resize_face(img, detector, predictor):
+        if img is None:
+                return None
         """
         Detect the face, extract facial landmarks, crop the face region, and resize the image.
 
@@ -46,8 +48,14 @@ def crop_and_resize_face(img, detector, predictor):
         y_min = min([shape.part(i).y for i in range(shape.num_parts)])
         y_max = max([shape.part(i).y for i in range(shape.num_parts)])
 
+        if x_min >= x_max or y_min >= y_max:
+                print("invalid cropping")
+                return None
+
         # Crop and resize
         cropped_face = img[y_min:y_max, x_min:x_max]
+        if cropped_face is None:
+                return None
         resized_face = cv2.resize(cropped_face, (150, 150))
 
         # 显示检测到的人脸

@@ -27,31 +27,25 @@ for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
             X_masked.append(img)
 
 X_ConvertGrayscale = []
-for x_list in tqdm.tqdm(X, desc='convert grayscale'):
-    temp_X_blured = []
-    for x in x_list:
-        blured_face = preprocessing_utils.convert_to_grayscale(x)
-        temp_X_blured.append(blured_face)
-    X_ConvertGrayscale.append(temp_X_blured)
+for x in tqdm.tqdm(X, desc='convert grayscale'):
+    grayscale_face = preprocessing_utils.convert_to_grayscale(x)
+    X_ConvertGrayscale.append(grayscale_face)
 
 X_masked_ConvertGrayscale = []
-for x_list in tqdm.tqdm(X_masked, desc='convert grayscale'):
-    temp_X_blured = []
-    for x in x_list:
-        blured_face = preprocessing_utils.convert_to_grayscale(x)
-        temp_X_blured.append(blured_face)
-    X_masked_ConvertGrayscale.append(temp_X_blured)
+for x in tqdm.tqdm(X_masked, desc='convert grayscale'):
+    grayscale_face = preprocessing_utils.convert_to_grayscale(x)
+    X_masked_ConvertGrayscale.append(grayscale_face)
 
 X_ConvertGrayscale_dataset_path = '../20_GeorgiaTechFaces/ConvertGrayscaleprocessedset_1'
 if not os.path.exists(X_ConvertGrayscale_dataset_path):
     os.makedirs(X_ConvertGrayscale_dataset_path)
-for i, img in enumerate(X_masked):
-    img_save_path = os.path.join(X_ConvertGrayscale_dataset_path, f"{str(i + 1).zfill(5)}.jpg")
+for i, img in enumerate(X_ConvertGrayscale):
+    img_save_path = os.path.join(X_ConvertGrayscale_dataset_path, f"{str(i + 1).zfill(6)}.jpg")
     cv2.imwrite(img_save_path, img)
 
-X_masked_ConvertGrayscale_dataset_path = '../GeorgiaTechFaces/20_ConvertGrayscaleMaskprocessedset_1'
+X_masked_ConvertGrayscale_dataset_path = '../20_GeorgiaTechFaces/ConvertGrayscaleMaskprocessedset_1'
 if not os.path.exists(X_masked_ConvertGrayscale_dataset_path):
     os.makedirs(X_masked_ConvertGrayscale_dataset_path)
-for i, img in enumerate(X_masked):
-    img_save_path = os.path.join(X_masked_ConvertGrayscale_dataset_path, f"{str(i + 1).zfill(5)}.jpg")
+for i, img in enumerate(X_masked_ConvertGrayscale):
+    img_save_path = os.path.join(X_masked_ConvertGrayscale_dataset_path, f"{str(i + 1).zfill(6)}.jpg")
     cv2.imwrite(img_save_path, img)

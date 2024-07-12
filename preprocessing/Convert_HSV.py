@@ -44,16 +44,16 @@ X_ConvertHSV = []
 for x_list in tqdm.tqdm(X, desc='convert HSV'):
     temp_X_blured = []
     for x in x_list:
-        blured_face = preprocessing_utils.convert_to_hsv(x)
-        temp_X_blured.append(blured_face)
+        HSV_face = preprocessing_utils.convert_to_hsv(x)
+        temp_X_blured.append(HSV_face)
     X_ConvertHSV.append(temp_X_blured)
 
 X_masked_ConvertHSV = []
 for x_list in tqdm.tqdm(X_masked, desc='convert HSV'):
     temp_X_blured = []
     for x in x_list:
-        blured_face = preprocessing_utils.convert_to_hsv(x)
-        temp_X_blured.append(blured_face)
+        HSV_face = preprocessing_utils.convert_to_hsv(x)
+        temp_X_blured.append(HSV_face)
     X_masked_ConvertHSV.append(temp_X_blured)
 
 X_ConvertHSV_dataset_path = '../GeorgiaTechFaces/ConvertHSVprocessedset_1'

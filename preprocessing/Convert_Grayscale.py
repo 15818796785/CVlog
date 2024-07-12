@@ -44,16 +44,16 @@ X_ConvertGrayscale = []
 for x_list in tqdm.tqdm(X, desc='convert grayscale'):
     temp_X_blured = []
     for x in x_list:
-        blured_face = preprocessing_utils.convert_to_grayscale(x)
-        temp_X_blured.append(blured_face)
+        grayscale_face = preprocessing_utils.convert_to_grayscale(x)
+        temp_X_blured.append(grayscale_face)
     X_ConvertGrayscale.append(temp_X_blured)
 
 X_masked_ConvertGrayscale = []
 for x_list in tqdm.tqdm(X_masked, desc='convert grayscale'):
     temp_X_blured = []
     for x in x_list:
-        blured_face = preprocessing_utils.convert_to_grayscale(x)
-        temp_X_blured.append(blured_face)
+        grayscale_face = preprocessing_utils.convert_to_grayscale(x)
+        temp_X_blured.append(grayscale_face)
     X_masked_ConvertGrayscale.append(temp_X_blured)
 
 X_ConvertGrayscale_dataset_path = '../GeorgiaTechFaces/ConvertGrayscaleprocessedset_1'

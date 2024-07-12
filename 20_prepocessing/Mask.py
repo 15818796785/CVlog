@@ -7,6 +7,7 @@ from skimage.feature import hog
 # import more libraries as you need
 import cv2
 import tqdm
+import preprocessing_utils
 
 dataset_path = "../20_GeorgiaTechFaces/img_align_celeba/img_align_celeba"
 predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
@@ -39,6 +40,7 @@ def add_mask(image, landmarks):
 
 X_masked = []
 related = []
+rotate = []
 for x in tqdm.tqdm(X, desc='adding masks'):
     dets = detector(x, 1)
     if len(dets) == 0:
@@ -47,11 +49,14 @@ for x in tqdm.tqdm(X, desc='adding masks'):
         shape = predictor(x, d)
         landmarks = np.array([[p.x, p.y] for p in shape.parts()])
         masked_face = add_mask(x, landmarks)
+        rotate_face = preprocessing_utils.random_rotate(x)
         related.append(x)
+        rotate.append(rotate_face)
         X_masked.append(masked_face)
 
 Masked_dataset_path = "../20_GeorgiaTechFaces/masked"
 related_dataset_path = "../20_GeorgiaTechFaces/related"
+rotate_dataset_path = "../20_GeorgiaTechFaces/rotate"
 
 # 确保目录存在，如果不存在则创建
 if not os.path.exists(Masked_dataset_path):
@@ -64,4 +69,10 @@ if not os.path.exists(related_dataset_path):
     os.makedirs(related_dataset_path)
 # Save the processed images
 for i, img in enumerate(related):
-    cv2.imwrite(os.path.join(related_dataset_path, f"{str(i + 1).zfill(6)}.jpg"), img)
+    cv2.imwrite(os.path.join(related_dataset_path, f"{str(i + 1).zfill(6)}.png"), img)
+
+if not os.path.exists(rotate_dataset_path):
+    os.makedirs(rotate_dataset_path)
+# Save the processed images
+for i, img in enumerate(rotate):
+    cv2.imwrite(os.path.join(rotate_dataset_path, f"{str(i + 1).zfill(6)}.jpg"), img)
