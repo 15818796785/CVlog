@@ -96,9 +96,9 @@ print(f'Accuracy: {accuracy * 100:.2f}%')
 
 # 保存混淆矩阵和分类报告
 conf_matrix_df = pd.DataFrame(conf_matrix, index=np.unique(y_test), columns=np.unique(y_test))
-conf_matrix_df.to_csv('confusion_matrix_SVM.csv', index=True)
+conf_matrix_df.to_csv('confusion_matrix_SVM_sift.csv', index=True)
 
-with open('classification_report_SVM.txt', 'w') as f:
+with open('classification_report_SVM_sift.txt', 'w') as f:
     f.write(class_report)
 
 # 可视化混淆矩阵
@@ -107,5 +107,5 @@ sns.heatmap(conf_matrix_df, annot=True, fmt='d', cmap='Blues')
 plt.title('Confusion Matrix')
 plt.xlabel('Predicted Label')
 plt.ylabel('True Label')
-plt.savefig('confusion_matrix_SVM.png')
+plt.savefig('confusion_matrix_SVM_sift.png')
 plt.show()
