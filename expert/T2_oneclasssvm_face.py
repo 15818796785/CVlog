@@ -7,8 +7,8 @@ import dlib
 from sklearn.svm import OneClassSVM
 from sklearn.metrics import accuracy_score
 
-dataset_path = "GeorgiaTechFaces/Maskedset_1"
-predictor_path = 'shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
+dataset_path = "../GeorgiaTechFaces/Maskedset_1"
+predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
 
 # 加载面部检测器
 detector = dlib.get_frontal_face_detector()
@@ -52,7 +52,7 @@ X_train = np.array(employee_encodings)
 X_test = np.array(employee_encodings + outsider_encodings)
 
 # 训练OneClassSVM模型
-clf = OneClassSVM(nu=0.4, kernel='rbf', gamma='auto')
+clf = OneClassSVM(nu=0.01, kernel='rbf', gamma='auto')
 clf.fit(X_train)
 
 # 进行预测

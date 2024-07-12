@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 
+from CVlog.bonus.utils import train_model_in_batch, save_model, load_model
+
 # 数据集路径
 dataset_path = 'GeorgiaTechFaces/Crop_1'
 masked_path = 'GeorgiaTechFaces/Maskedcrop_1'
@@ -27,7 +29,7 @@ for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading unmasked i
 X_train = np.array(X_train)
 y_train = np.array(y_train)
 
-# 读取戴口罩的数据
+#读取戴口罩的数据
 X_test = []
 y_test = []
 for subject_name in tqdm.tqdm(os.listdir(masked_path), desc='reading masked images'):
@@ -38,6 +40,7 @@ for subject_name in tqdm.tqdm(os.listdir(masked_path), desc='reading masked imag
                 img_path = os.path.join(subject_images_dir, img_name)
                 img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                 img = cv2.resize(img, (150, 150))
+
                 X_test.append(img.flatten())
                 y_test.append(int(subject_name[1:]))
 
