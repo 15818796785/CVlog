@@ -35,13 +35,13 @@ y_test = y
 
 # 定义 k 值的范围
 k_values = [1, 3, 5, 7, 9]
-metric_values = ['minkowski', 'euclidean', 'manhattan', 'chebyshev', 'cosine', 'hamming']
+metric_values = ['minkowski']#, 'euclidean', 'manhattan', 'chebyshev', 'cosine', 'hamming']
 accuracies = []
 
 # 训练并测试 one-class kNN 模型
 for k in k_values:
     for m in metric_values:
-        knn = NearestNeighbors(n_neighbors=k, algorithm='ball_tree', leaf_size=30, metric=m)
+        knn = NearestNeighbors(n_neighbors=k, algorithm='auto', leaf_size=30, metric=m, p=2)
         knn.fit(X_employee)
 
         y_pred = []
@@ -63,13 +63,11 @@ for k in k_values:
         print(f"k: {k}, matric: {m}, Accuracy: {accuracy:.3f}")
 
 # 绘制 k 值与准确率的关系
-plt.figure(figsize=(12, 8))
-for j, metric in enumerate(metric_values):
-    plt.plot(k_values, accuracies[:, j], marker='o', label=f'Metric={metric}')
+plt.figure(figsize=(8, 6))
+plt.plot(k_values, accuracies, marker='o')
 plt.xlabel("Number of Neighbors (k)")
 plt.ylabel("Accuracy")
-plt.title("Accuracy vs Number of Neighbors (k) for Different Metrics")
-plt.legend()
+plt.title("Accuracy vs Number of Neighbors (k) for Face Recognition")
 plt.grid()
 
 save_path = "../Accuracy/kNN"

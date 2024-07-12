@@ -21,36 +21,40 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
 
 X = []
+count = 0
 for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
     if img_name.endswith('.jpg'):
+        count += 1
+        if count <= 100000:
+            continue
         img_path = os.path.join(dataset_path, img_name)
         img = cv2.imread(img_path)
-        # if len(X) >= 38000:
+        # if len(X) >= 100000:
         #     break
         if img is not None:
             X.append(img)
 
 dataset_path = '../20_GeorgiaTechFaces/masked'
 X_masked = []
-for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-    if img_name.endswith('.jpg'):
-        img_path = os.path.join(dataset_path, img_name)
-        img = cv2.imread(img_path)
-        # if len(X_masked) >= 5000:
-        #     break
-        if img is not None:
-            X_masked.append(img)
+# for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
+#     if img_name.endswith('.jpg'):
+#         img_path = os.path.join(dataset_path, img_name)
+#         img = cv2.imread(img_path)
+#         # if len(X_masked) >= 5000:
+#         #     break
+#         if img is not None:
+#             X_masked.append(img)
 
 dataset_path = '../20_GeorgiaTechFaces/related'
 related = []
-for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-    if img_name.endswith('.png'):
-        img_path = os.path.join(dataset_path, img_name)
-        img = cv2.imread(img_path)
-        # if len(related) >= 5000:
-        #     break
-        if img is not None:
-            related.append(img)
+# for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
+#     if img_name.endswith('.png'):
+#         img_path = os.path.join(dataset_path, img_name)
+#         img = cv2.imread(img_path)
+#         # if len(related) >= 5000:
+#         #     break
+#         if img is not None:
+#             related.append(img)
 
 
 
@@ -89,7 +93,7 @@ processed_dataset_path = '../20_GeorgiaTechFaces/Crop_1'
 if not os.path.exists(processed_dataset_path):
     os.makedirs(processed_dataset_path)
 for i, img in enumerate(X_processed):
-    img_save_path = os.path.join(processed_dataset_path, f"{str(i + 1).zfill(6)}.jpg")
+    img_save_path = os.path.join(processed_dataset_path, f"{str(i + 100001).zfill(6)}.jpg")
     cv2.imwrite(img_save_path, img)
 
 
