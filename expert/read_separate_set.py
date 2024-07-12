@@ -23,7 +23,8 @@ def read_separate_set(path):
             for img_name in os.listdir(subject_images_dir):
                 if img_name.endswith('.jpg') and 1 <= int(img_name.split('.')[0]) <= 10:
                     img_path = os.path.join(subject_images_dir, img_name)
-                    img = cv2.imread(img_path,cv2.IMREAD_GRAYSCALE)
+                    img = cv2.imread(img_path)
+                    #cv2.resize(img, (150, 150))
                     temp_x_list.append(img)
             X_read_train.append(temp_x_list)
 
@@ -34,7 +35,8 @@ def read_separate_set(path):
             for img_name in os.listdir(subject_images_dir):
                 if img_name.endswith('.jpg') and int(img_name.split('.')[0]) >= 11 and int(img_name.split('.')[0]) <= 15:
                     img_path = os.path.join(subject_images_dir, img_name)
-                    img = cv2.imread(img_path,cv2.IMREAD_GRAYSCALE)
+                    img = cv2.imread(img_path)
+                    #cv2.resize(img, (150, 150))
                     temp_x_list.append(img)
             X_read_test.append(temp_x_list)
     
