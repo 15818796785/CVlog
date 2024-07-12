@@ -46,13 +46,6 @@ def read_separate_set(path):
     y_employee = [1] * len(X_employee)
     y_outsider = [0] * len(X_outsider)
     y = y_employee + y_outsider
-
-    # shuffle the test set
-    # zipped = list(zip(X_read_test, y))
-    # random.shuffle(zipped)
-    # X_shuffled, y_shuffled = zip(*zipped)
-    # X_test = list(X_shuffled)
-    # y_test = list(y_shuffled)
     X_test, y_test = shuffle_array(X_read_test, y)
     return X_employee, X_test, y_test
             
