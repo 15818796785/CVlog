@@ -69,18 +69,19 @@ for employee_images in X_test:
     order += 1
     flag = 0
     # select_num = 0
-    select_num = random.randint(10, len(employee_images) - 1)
+    select_num = random.randint(0, len(employee_images) - 1)
     image = employee_images[select_num]
     probe_encoding = face_recognition.face_encodings(image)
     start_time = time.time()
     while probe_encoding == [] and select_num < len(employee_images):
         # select_num += 1
-        select_num = random.randint(10, len(employee_images) - 1)
+        select_num = random.randint(0, len(employee_images) - 1)
         image = employee_images[select_num]
         probe_encoding = face_recognition.face_encodings(image)
         end_time = time.time()
         if end_time - start_time > 5:
             break
+    print("with index", select_num)
     for encoding in employee_encodings:
         if probe_encoding == []:
             break
@@ -89,7 +90,9 @@ for employee_images in X_test:
         results = face_recognition.compare_faces(encoding, probe_encoding, tolerance=0.5)
         # use break
         # 0.25 50%
+        # 0.45 94%
         # 0.5 96%
+        # 0.55 92%
         # not use break
         # 0.25 100%
         if len(results) and results[0]:
