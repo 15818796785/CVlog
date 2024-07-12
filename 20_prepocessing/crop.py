@@ -25,7 +25,7 @@ for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
     if img_name.endswith('.jpg'):
         img_path = os.path.join(dataset_path, img_name)
         img = cv2.imread(img_path)
-        # if len(X) >= 100:
+        # if len(X) >= 38000:
         #     break
         if img is not None:
             X.append(img)
@@ -36,7 +36,7 @@ for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
     if img_name.endswith('.jpg'):
         img_path = os.path.join(dataset_path, img_name)
         img = cv2.imread(img_path)
-        # if len(X_masked) >= 50:
+        # if len(X_masked) >= 5000:
         #     break
         if img is not None:
             X_masked.append(img)
@@ -47,7 +47,7 @@ for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
     if img_name.endswith('.png'):
         img_path = os.path.join(dataset_path, img_name)
         img = cv2.imread(img_path)
-        # if len(related) >= 50:
+        # if len(related) >= 5000:
         #     break
         if img is not None:
             related.append(img)

@@ -54,7 +54,10 @@ def crop_and_resize_face(img, detector, predictor):
 
         # Crop and resize
         cropped_face = img[y_min:y_max, x_min:x_max]
-        if cropped_face is None:
+        if cropped_face.size == 0 or cropped_face is None:
+                plt.imshow(img)  # Display the image with no faces detected
+                plt.title('No faces detected')
+                plt.show()
                 return None
         resized_face = cv2.resize(cropped_face, (150, 150))
 
