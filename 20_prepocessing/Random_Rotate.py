@@ -61,7 +61,8 @@ for i in tqdm.tqdm(range(len(X_rotate)), desc='preprocessing images 1'):
 
 for i in tqdm.tqdm(range(len(X_masked_rotate)), desc='preprocessing images 2'):
     t, temp_maskimg = detector3.crop_and_resize_face(rotate[i], X_masked_rotate[i], detector, predictor)
-
+    if temp_maskimg is None:
+        continue
     # append the converted image into temp_X_processed
     # append temp_X_processed into  X_processed
     X_maskprocessed.append(temp_maskimg)

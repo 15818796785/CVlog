@@ -22,39 +22,39 @@ predictor = dlib.shape_predictor(predictor_path)
 
 X = []
 count = 0
-for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-    if img_name.endswith('.jpg'):
-        count += 1
-        if count <= 100000:
-            continue
-        img_path = os.path.join(dataset_path, img_name)
-        img = cv2.imread(img_path)
-        # if len(X) >= 100000:
-        #     break
-        if img is not None:
-            X.append(img)
+# for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
+#     if img_name.endswith('.jpg'):
+#         count += 1
+#         if count <= 100000:
+#             continue
+#         img_path = os.path.join(dataset_path, img_name)
+#         img = cv2.imread(img_path)
+#         # if len(X) >= 100000:
+#         #     break
+#         if img is not None:
+#             X.append(img)
 
 dataset_path = '../20_GeorgiaTechFaces/masked'
 X_masked = []
-# for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-#     if img_name.endswith('.jpg'):
-#         img_path = os.path.join(dataset_path, img_name)
-#         img = cv2.imread(img_path)
-#         # if len(X_masked) >= 5000:
-#         #     break
-#         if img is not None:
-#             X_masked.append(img)
+for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
+    if img_name.endswith('.jpg'):
+        img_path = os.path.join(dataset_path, img_name)
+        img = cv2.imread(img_path)
+        # if len(X_masked) >= 5000:
+        #     break
+        if img is not None:
+            X_masked.append(img)
 
 dataset_path = '../20_GeorgiaTechFaces/related'
 related = []
-# for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-#     if img_name.endswith('.png'):
-#         img_path = os.path.join(dataset_path, img_name)
-#         img = cv2.imread(img_path)
-#         # if len(related) >= 5000:
-#         #     break
-#         if img is not None:
-#             related.append(img)
+for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
+    if img_name.endswith('.png'):
+        img_path = os.path.join(dataset_path, img_name)
+        img = cv2.imread(img_path)
+        # if len(related) >= 5000:
+        #     break
+        if img is not None:
+            related.append(img)
 
 
 
@@ -72,6 +72,7 @@ for i in tqdm.tqdm(range(len(X)), desc='preprocessing images 1'):
 for i in tqdm.tqdm(range(len(related)), desc='preprocessing images 2'):
     t, temp_maskimg = detector3.crop_and_resize_face(related[i], X_masked[i], detector, predictor)
     if temp_maskimg is None:
+        continue
         print(i)
         plt.imshow(cv2.cvtColor(related[i], cv2.COLOR_BGR2RGB))  # Display the image with no faces detected
         plt.title('No faces detected')
