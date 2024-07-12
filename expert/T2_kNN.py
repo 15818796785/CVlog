@@ -2,12 +2,13 @@ import os
 import random
 import cv2
 import numpy as np
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 import tqdm
 
-processedset_path = "../GeorgiaTechFaces/Maskedgray_1"
+processedset_path = "../GeorgiaTechFaces/Dataset_1"
 
 X_processed = []
 y = []
@@ -57,6 +58,10 @@ all_distances = []
 accuracies = np.zeros((len(k_values), len(distances_thresholds)))
 
 # 训练并测试 one-class kNN 模型
+cms = []
+save_path = '../Accuracy/kNN'
+subject_folder = os.path.join(save_path, 'Dataset_1')
+os.makedirs(subject_folder, exist_ok=True)
 for i, k in enumerate(k_values):
     for j, d in enumerate(distances_thresholds):
         knn = NearestNeighbors(n_neighbors=k, algorithm='auto', leaf_size=30, metric='minkowski', p=2)
@@ -72,8 +77,6 @@ for i, k in enumerate(k_values):
             else:
                 y_pred.append(0)  # REJECT
 
-
-
         # 将预测结果转换为接受或拒绝
         y_pred_accept_reject = ["ACCEPT" if pred == 1 else "REJECT" for pred in y_pred]
         y_test_accept_reject = ["ACCEPT" if true == 1 else "REJECT" for true in y_test]
@@ -82,6 +85,17 @@ for i, k in enumerate(k_values):
         accuracy = np.mean(np.array(y_pred_accept_reject) == np.array(y_test_accept_reject))
         accuracies[i, j] = accuracy
         print(f"k: {k}, distance threshold: {d}, Accuracy: {accuracy:.3f}")
+
+        # 绘制混淆矩阵
+        cm = confusion_matrix(y_test_accept_reject, y_pred_accept_reject, labels=["ACCEPT", "REJECT"])
+        cms.append(cm)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["ACCEPT", "REJECT"])
+        disp.plot(cmap=plt.cm.Blues)
+        plt.title(f"Confusion Matrix (k={k}, distance threshold={d})")
+        cm_save_path = os.path.join(subject_folder, f"confusion_matrix_k{k}_d{d}.png")
+        plt.savefig(cm_save_path)
+        plt.close()
+
 
 # 计算距离值的统计信息
 min_distance = np.min(all_distances)
@@ -96,14 +110,15 @@ print(f"Mean distance: {mean_distance}")
 plt.figure(figsize=(12, 8))
 for i, k in enumerate(k_values):
     plt.plot(distances_thresholds, accuracies[i], marker='o', label=f'k={k}')
+    for j, d in enumerate(distances_thresholds):
+        plt.text(d, accuracies[i, j], f"{accuracies[i, j]:.2f}", fontsize=9, ha='right')
 plt.xlabel("Distance Threshold")
 plt.ylabel("Accuracy")
 plt.title("Accuracy vs Distance Threshold for different k values")
 plt.legend()
 plt.grid()
-plt.show()
 
 save_path = "../Accuracy/kNN"
-plot_save_path = os.path.join(save_path, "kNN_Maskedgray_1_k_vs_accuracy.png")
+plot_save_path = os.path.join(save_path, "kNN_Dataset_1_k_vs_accuracy.png")
 plt.savefig(plot_save_path)
 plt.show()

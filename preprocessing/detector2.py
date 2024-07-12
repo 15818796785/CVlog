@@ -40,11 +40,14 @@ def crop_and_resize_face(img, detector, predictor):
 
         shape = predictor(img_rgb, d)
 
-        # Get the bounding box coordinates from the landmarks
-        x_min = min([shape.part(i).x for i in range(shape.num_parts)])
-        x_max = max([shape.part(i).x for i in range(shape.num_parts)])
-        y_min = min([shape.part(i).y for i in range(shape.num_parts)])
-        y_max = max([shape.part(i).y for i in range(shape.num_parts)])
+        # 增加边界框的边距
+        padding = 30
+
+        # Get the bounding box coordinates from the landmarks with padding
+        x_min = min([shape.part(i).x for i in range(shape.num_parts)]) - padding
+        x_max = max([shape.part(i).x for i in range(shape.num_parts)]) + padding
+        y_min = min([shape.part(i).y for i in range(shape.num_parts)]) - padding
+        y_max = max([shape.part(i).y for i in range(shape.num_parts)]) + padding
 
         # Crop and resize
         cropped_face = img[y_min:y_max, x_min:x_max]
