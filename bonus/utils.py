@@ -23,7 +23,7 @@ def load_model(path):
         return loaded_model
 
 
-## use opencv and hog
+## use opencv and hog , not convert to gray
 def load_image_dataset(dataset_path):
     X = []
     for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='Reading images'):
