@@ -5,70 +5,83 @@ import tqdm
 import face_recognition
 import dlib
 from sklearn.svm import OneClassSVM
+import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
+from read_separate_set_face_recognition import read_separate_set
 
-dataset_path = "../GeorgiaTechFaces/Maskedset_1"
-predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
+dataset_path = "GeorgiaTechFaces/Gray_1"
+predictor_path = 'shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
 
 # 加载面部检测器
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(predictor_path)
 
-# 加载图像并组织成结构化数据
-X = []
-for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='Reading images'):
-    if os.path.isdir(os.path.join(dataset_path, subject_name)):
-        subject_images_dir = os.path.join(dataset_path, subject_name)
-        temp_x_list = []
-        for img_name in os.listdir(subject_images_dir):
-            if img_name.endswith('.jpg'):
-                img_path = os.path.join(subject_images_dir, img_name)
-                img = face_recognition.load_image_file(img_path)
-                temp_x_list.append(img)
-        X.append(temp_x_list)
 
-# 将X分类成employee和outsider
-random.shuffle(X)
-X = [item for sublist in X for item in sublist]
-
-# 定义员工和外来者的面部图像
-employee_faces = X[:30*len(X[0])]
-outsider_faces = X[30*len(X[0]):]
+X_employee, X_test, y_test = read_separate_set(dataset_path)
 
 def get_face_encodings(face_images):
     encodings = []
-    for face in tqdm.tqdm(face_images,desc="extracting face features"):
-        face_locations = face_recognition.face_locations(face)
-        if face_locations:  # 确保检测到面部
-            face_enc = face_recognition.face_encodings(face, face_locations)[0]
-            encodings.append(face_enc)
+    for face_list in tqdm.tqdm(face_images,desc="extracting face features"):
+        temp_list = []
+        for face in face_list:
+            face_locations = face_recognition.face_locations(face)
+            if face_locations:  # 确保检测到面部
+                face_enc = face_recognition.face_encodings(face, face_locations)[0]
+                temp_list.append(face_enc)
+        encodings.append(temp_list)
     return encodings
 
-employee_encodings = get_face_encodings(employee_faces)
-outsider_encodings = get_face_encodings(outsider_faces)
+employee_encodings = get_face_encodings(X_employee)
+test_encodings = get_face_encodings(X_test)
+temp_y = []
+for i in range(len(y_test)):
+    len_list = len(test_encodings[i])
+    for j in range(len_list):
+        temp_y.append(y_test[i])
+y_test = temp_y
+test_encodings = [item for sublist in test_encodings for item in sublist]
+employee_encodings = [item for sublist in employee_encodings for item in sublist]
 
 # 将数据分成训练集和测试集
+print("employee_encodings:{}".format(len(employee_encodings)))
+# print("outsider_encodings{}".format(len(outsider_encodings)))
 X_train = np.array(employee_encodings)
-X_test = np.array(employee_encodings + outsider_encodings)
+X_test = np.array(test_encodings)
 
 # 训练OneClassSVM模型
-clf = OneClassSVM(nu=0.01, kernel='rbf', gamma='auto')
-clf.fit(X_train)
+# 定义 nu 的不同取值
+nus = [0.005,0.01, 0.02, 0.04, 0.06]
 
-# 进行预测
-y_pred_train = clf.predict(X_train)
-y_pred_test = clf.predict(X_test)
+# 保存每个 nu 下的准确率
+accuracies = []
 
-# 将预测结果转换为标签
-y_pred_train_labels = np.where(y_pred_train == 1, "ACCEPT", "REJECTED")
-y_pred_test_labels = np.where(y_pred_test == 1, "ACCEPT", "REJECTED")
+# 遍历每个 nu 进行训练和测试
+for nu in nus:
+    clf = OneClassSVM(nu=nu, kernel='rbf', gamma='auto')
+    clf.fit(X_train)
 
-# 创建真实标签
-y_true_test = ["ACCEPT"] * len(employee_encodings) + ["REJECTED"] * len(outsider_encodings)
+    # 进行预测
+    y_pred_test = clf.predict(X_test)
+    print("y_pred_test:{}".format(len(y_pred_test)))
+    # 将预测结果转换为标签
+    y_pred_test_labels = np.where(y_pred_test == 1, "ACCEPT", "REJECTED")
 
-# 计算准确率
-accuracy = accuracy_score(y_true_test, y_pred_test_labels)
-print(f"Model accuracy: {accuracy:.2f}")
+    # 创建真实标签
+    # y_true_test = ["ACCEPT"] * len(employee_encodings) + ["REJECTED"] * len(outsider_encodings)
+    y_true_test = ["ACCEPT" if i ==1 else "REJECTED" for i in y_test ]
+    # 计算准确率
+    accuracy = accuracy_score(y_true_test, y_pred_test_labels)
+    accuracies.append(accuracy)
+    print(f"nu = {nu}, Model accuracy: {accuracy:.2f}")
+
+# 绘制 nu 和准确率的关系图
+plt.figure(figsize=(10, 6))
+plt.plot(nus, accuracies, marker='o')
+plt.title('Model Accuracy for Different nu Values')
+plt.xlabel('nu')
+plt.ylabel('Accuracy')
+plt.grid(True)
+plt.savefig('One class svm accuracy_Gray_1.png')
+plt.show()
 
 # # 输出训练和测试的错误数量
 # n_error_train = y_pred_train_labels[y_pred_train_labels == "REJECTED"].size
