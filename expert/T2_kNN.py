@@ -8,7 +8,7 @@ from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 import tqdm
 
-processedset_path = "../GeorgiaTechFaces/Dataset_1"
+processedset_path = "../GeorgiaTechFaces/EdgeDetectionMaskprocessedset_1"
 
 X_processed = []
 y = []
@@ -59,8 +59,8 @@ accuracies = np.zeros((len(k_values), len(distances_thresholds)))
 
 # 训练并测试 one-class kNN 模型
 cms = []
-save_path = '../Accuracy/kNN'
-subject_folder = os.path.join(save_path, 'Dataset_1')
+save_path = '../Accuracy/kNN/NO_feature'
+subject_folder = os.path.join(save_path, 'EdgeDetectionMaskprocessedset_1')
 os.makedirs(subject_folder, exist_ok=True)
 for i, k in enumerate(k_values):
     for j, d in enumerate(distances_thresholds):
@@ -118,7 +118,7 @@ plt.title("Accuracy vs Distance Threshold for different k values")
 plt.legend()
 plt.grid()
 
-save_path = "../Accuracy/kNN"
-plot_save_path = os.path.join(save_path, "kNN_Dataset_1_k_vs_accuracy.png")
+save_path = "../Accuracy/kNN/NO_feature/EdgeDetectionMaskprocessedset_1"
+plot_save_path = os.path.join(save_path, "kNN_EdgeDetectionMaskprocessedset_1_k_vs_accuracy.png")
 plt.savefig(plot_save_path)
 plt.show()
