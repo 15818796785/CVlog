@@ -71,6 +71,6 @@ plt.grid()
 
 # 保存图像并显示
 save_path = "../bonus_accuracy/kNN"
-plot_save_path = os.path.join(save_path, "kNN_Crop_1_k_vs_accuracy.png")
+plot_save_path = os.path.join(save_path, "kNN_unCrop_1_k_vs_accuracy.png")
 plt.savefig(plot_save_path)
 plt.show()
