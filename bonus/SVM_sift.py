@@ -4,7 +4,6 @@ import cv2
 import numpy as np
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.decomposition import PCA
-from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
@@ -14,19 +13,20 @@ import seaborn as sns
 from scipy.cluster.vq import vq
 
 # 数据集路径
-dataset_path = 'GeorgiaTechFaces/Processedset_1'
-masked_path = 'GeorgiaTechFaces/Maskprocessedset_1'
+dataset_path = 'GeorgiaTechFaces/ConvertGrayscaleprocessedset_1'
+masked_path = 'GeorgiaTechFaces/ConvertGrayscaleMaskprocessedset_1'
 
 def extract_sift_features(image):
     sift = cv2.SIFT_create()
     keypoints, descriptors = sift.detectAndCompute(image, None)
     if descriptors is None:
         descriptors = np.zeros((1, sift.descriptorSize()), dtype=np.float32)
-    return descriptors
+    return keypoints, descriptors
 
 def load_and_extract_sift_features(path, desc):
     descriptors_list = []
     y = []
+    keypoints_list = []
     for subject_name in tqdm.tqdm(os.listdir(path), desc=desc):
         if os.path.isdir(os.path.join(path, subject_name)):
             subject_images_dir = os.path.join(path, subject_name)
@@ -35,26 +35,43 @@ def load_and_extract_sift_features(path, desc):
                     img_path = os.path.join(subject_images_dir, img_name)
                     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                     img = cv2.resize(img, (150, 150))
-                    descriptors = extract_sift_features(img)
+                    keypoints, descriptors = extract_sift_features(img)
                     descriptors_list.append(descriptors)
                     y.append(int(subject_name[1:]))
-    return descriptors_list, np.array(y)
+                    keypoints_list.append((img, keypoints))  # 保存图像和关键点
+    return descriptors_list, np.array(y), keypoints_list
 
 # 读取并提取SIFT特征
-descriptors_list_train, y_train = load_and_extract_sift_features(dataset_path, 'reading unmasked images')
-descriptors_list_test, y_test = load_and_extract_sift_features(masked_path, 'reading masked images')
+descriptors_list_train, y_train, keypoints_list_train = load_and_extract_sift_features(dataset_path, 'reading unmasked images')
+descriptors_list_test, y_test, keypoints_list_test = load_and_extract_sift_features(masked_path, 'reading masked images')
+path = 'sift'
+if not os.path.exists(path):
+    os.makedirs(path)
+# 展示部分图像的SIFT关键点和描述子
+def visualize_sift_keypoints(keypoints_list, num_samples=5, folder = 'sift'):
+    for i, (img, keypoints) in enumerate(keypoints_list[:num_samples]):
+        img_with_keypoints = cv2.drawKeypoints(img, keypoints, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        plt.figure(figsize=(10, 10))
+        plt.imshow(img_with_keypoints, cmap='gray')
+        plt.title(f'SIFT Keypoints - Sample {i+1}')
+        plt.axis('off')
+        pathimg = os.path.join(folder, f'SIFT_{i+1}.png')
+        plt.savefig(pathimg)
+        plt.show()
+
+visualize_sift_keypoints(keypoints_list_train)
 
 # 创建所有图像的描述符堆
 all_descriptors = np.vstack(descriptors_list_train + descriptors_list_test)
 
-print('stack of descriptors done')
+print('Stack of descriptors done')
 
 # 使用PCA减少特征维度
 pca = PCA(n_components=5)  # 可以根据需要调整主成分数量
 all_descriptors_pca = pca.fit_transform(all_descriptors)
 
 # 使用MiniBatchKMeans进行聚类
-num_clusters = 5000 # 可以根据需要调整聚类数量
+num_clusters = 5000  # 可以根据需要调整聚类数量
 minibatch_kmeans = MiniBatchKMeans(n_clusters=num_clusters, batch_size=1000, n_init=10)
 minibatch_kmeans.fit(all_descriptors_pca)
 
