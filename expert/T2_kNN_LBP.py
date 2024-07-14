@@ -9,7 +9,7 @@ from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 import tqdm
 
-processedset_path = "../GeorgiaTechFaces/ConvertGrayscaleprocessedset_1"
+processedset_path = "../GeorgiaTechFaces/ConvertGrayscaleMaskprocessedset_1"
 
 X_processed = []
 y = []
@@ -91,7 +91,7 @@ X_test_flat = np.array([img.flatten() for sublist in X_test for img in sublist])
 y_test = [item for item in y_test for _ in range(5)]
 k = 1
 # 定义距离阈值的范围
-distances_thresholds = [0, 0.001, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
+distances_thresholds = [0, 0.001, 0.005, 0.01, 0.0125, 0.015, 0.0175, 0.02, 0.0225, 0.025, 0.0275, 0.03]
 
 # 存储所有距离的列表
 all_distances = []
@@ -102,7 +102,7 @@ accuracies = np.zeros((len(distances_thresholds),))
 # 训练并测试 one-class kNN 模型
 cms = []
 save_path = '../Accuracy/kNN/LBP'
-subject_folder = os.path.join(save_path, 'ConvertGrayscaleprocessedset_1')
+subject_folder = os.path.join(save_path, 'ConvertGrayscaleMaskprocessedset_1')
 os.makedirs(subject_folder, exist_ok=True)
 
 for j, d in enumerate(distances_thresholds):
@@ -156,6 +156,6 @@ plt.ylabel("Accuracy")
 plt.title(f"Accuracy vs Distance Threshold (k={k})")
 plt.grid()
 
-plot_save_path = os.path.join(save_path, "ConvertGrayscaleprocessedset_1_kNN_accuracy_vs_distance_threshold.png")
+plot_save_path = os.path.join(save_path, "ConvertGrayscaleMaskprocessedset_1_kNN_accuracy_vs_distance_threshold.png")
 plt.savefig(plot_save_path)
 plt.show()
