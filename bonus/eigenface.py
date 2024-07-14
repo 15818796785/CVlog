@@ -1,0 +1,99 @@
+import cv2
+import numpy as np
+from sklearn.metrics import accuracy_score
+
+from CVlog.bonus.eigrnfaces_utils import createDataMatrix, resetSliderValues, createNewFace, recognize_face, \
+    test_threshold
+from CVlog.expert.read_separate_set import read_separate_set
+
+
+
+dataset_path = "../GeorgiaTechFaces/gray_1"
+
+    # Number of EigenFaces
+NUM_EIGEN_FACES = 10
+
+    # Maximum weight
+MAX_SLIDER_VALUE = 255
+
+
+
+    # Read images
+X_t,X_te,y_test = read_separate_set(dataset_path)
+X_train = []
+X_test = []
+for item in X_t:
+    for i in item:
+       # i = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
+       # i=i.resize(150,150,3)
+        X_train.append(i)
+
+for item in X_te:
+    for i in item:
+       # i = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
+      #  i = i.resize(150, 150,3)
+        X_test.append(i)
+
+X_train = createDataMatrix(X_train)
+X_test = createDataMatrix(X_test)
+
+
+X_train = np.array(X_train)
+X_test = np.array(X_test)
+y_test = np.repeat(y_test,5)
+
+
+    # Size of images
+# sz = images[0].shape
+#
+#     # Create data matrix for PCA.
+# data = createDataMatrix(images)
+
+    # Compute the eigenvectors from the stack of images created
+print("Calculating PCA ", end="...")
+mean, eigenVectors = cv2.PCACompute(X_train, mean=None, maxComponents=NUM_EIGEN_FACES)
+print("DONE")
+
+averageFace = mean.reshape(480,640,3)
+
+eigenFaces = [];
+
+for eigenVector in eigenVectors:
+        eigenFace = eigenVector.reshape(480,640,3)
+        eigenFaces.append(eigenFace)
+
+weights = np.dot(X_train - mean, eigenVectors.T)
+
+# 对测试集中的每一张脸进行识别
+y_pred = []
+threshold = 3400  # 设置一个阈值用于决定是否为已知的脸
+for face in X_test:
+    idx, dist = recognize_face(face, eigenVectors, mean, weights)
+    if dist < threshold:
+        y_pred.append( 'Accepted')
+    else:
+        y_pred.append( 'Rejected')
+
+
+y_test = ['Accepted' if x == 1 else 'Rejected' for x in y_test]
+# 假设 y_test 是一个包含整数的列表
+print("y_pred",y_pred)
+print("y_test",y_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model accuracy: {accuracy * 100:.2f}%")
+
+# y_test = ['Accepted' if x == 1 else 'Rejected' for x in y_test]
+# # 设定一系列可能的阈值
+# thresholds = np.linspace(4000, 6000, num=10)  # 例如，从 1000 到 10000，分为10个阈值进行测试
+# 
+# # 调用函数测试阈值
+# best_threshold, best_accuracy, results = test_threshold(X_test, eigenVectors, mean, weights, y_test, thresholds)
+# 
+# # 输出最佳阈值和准确率
+# print(f"Best Threshold: {best_threshold}")
+# print(f"Best Model Accuracy: {best_accuracy * 100:.2f}%")
+# 
+# # 可以选择打印所有测试结果
+# for threshold, accuracy in results:
+#     print(f"Threshold: {threshold}, Accuracy: {accuracy * 100:.2f}%")
