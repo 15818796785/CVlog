@@ -60,7 +60,7 @@ for i in tqdm.tqdm(range(len(X)), desc='preprocessing images'):
     X_maskprocessed.append((subject_name, temp_X_maskprocessed))
 
 # 保存处理后的图像
-maskprocessed_dataset_path = '../20_GeorgiaTechFaces/Maskedcrop_1'
+maskprocessed_dataset_path = '../20_GeorgiaTechFaces/Maskedcrop_1/part_1'
 os.makedirs(maskprocessed_dataset_path, exist_ok=True)
 for subject_name, subject_images in X_maskprocessed:
     subject_folder = os.path.join(maskprocessed_dataset_path, subject_name)
@@ -68,7 +68,7 @@ for subject_name, subject_images in X_maskprocessed:
     for img_name, img in subject_images:
         cv2.imwrite(os.path.join(subject_folder, img_name), img)
 
-processed_dataset_path = '../20_GeorgiaTechFaces/Crop_1'
+processed_dataset_path = '../20_GeorgiaTechFaces/Crop_1/part_1'
 os.makedirs(processed_dataset_path, exist_ok=True)
 for subject_name, subject_images in X_processed:
     subject_folder = os.path.join(processed_dataset_path, subject_name)
