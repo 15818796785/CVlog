@@ -1,5 +1,5 @@
 import os
-
+import tqdm
 import cv2
 import numpy as np
 from skimage.feature import hog
@@ -8,13 +8,13 @@ from skimage.feature import hog
 
 
 
-
+# path = '20_GeorgiaTechFaces/dataset/part_1'
 
 def train_split(path):
     X_train = []
     y_train = []
 
-    for forder in os.listdir(path):
+    for forder in tqdm.tqdm(os.listdir(path), desc='split train data:'):
           for i, img in enumerate(os.listdir(os.path.join(path, forder))):
              if (i < len(os.listdir(os.path.join(path, forder))) / 3):
                  p = os.path.join(path, forder, img)
@@ -35,7 +35,7 @@ def test_split(path):
     X_test = []
     y_test = []
 
-    for forder in os.listdir(path):
+    for forder in tqdm.tqdm(os.listdir(path), desc='split test data:'):
         for i, img in enumerate(os.listdir(os.path.join(path, forder))):
             if (i >= len(os.listdir(os.path.join(path, forder)))-len(os.listdir(os.path.join(path, forder))) / 3):
                 p = os.path.join(path, forder, img)
@@ -50,3 +50,5 @@ def test_split(path):
                 break
 
     return X_test, y_test
+
+# print(train_split(path))
