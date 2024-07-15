@@ -7,11 +7,11 @@ import tqdm
 import preprocessing_utils
 
 # 定义路径
-dataset_path = "../20_GeorgiaTechFaces/dataset/part_9"
+dataset_path = "../20_GeorgiaTechFaces/dataset/part_10"
 predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
-Masked_dataset_path = "../20_GeorgiaTechFaces/masked/part_9"
-related_dataset_path = "../20_GeorgiaTechFaces/related/part_9"
-rotate_dataset_path = "../20_GeorgiaTechFaces/rotate/part_9"
+Masked_dataset_path = "../20_GeorgiaTechFaces/masked/part_10"
+related_dataset_path = "../20_GeorgiaTechFaces/related/part_10"
+rotate_dataset_path = "../20_GeorgiaTechFaces/rotate/part_10"
 
 # 初始化dlib的面部检测器和面部标志预测器
 detector = dlib.get_frontal_face_detector()

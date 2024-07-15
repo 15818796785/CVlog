@@ -54,7 +54,7 @@ def crop_and_resize_face(img, img_masked, detector, predictor):
                 plt.imshow(img)  # Display the image with no faces detected
                 plt.title('No faces detected')
                 plt.show()
-                return None
+                return None, None
         if cropped_maskedface.size == 0 or cropped_maskedface is None:
                 plt.imshow(img)  # Display the image with no faces detected
                 plt.title('No faces detected')

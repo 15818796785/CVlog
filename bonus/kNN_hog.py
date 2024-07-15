@@ -17,8 +17,8 @@ def extract_hog_features(image):
     return features, hog_image
 
 
-processedset_path = "../20_GeorgiaTechFaces/dataset/part_1"
-masked_processedset_path = "../20_GeorgiaTechFaces/masked/part_1"
+processedset_path = "../20_GeorgiaTechFaces/related/part_2"
+masked_processedset_path = "../20_GeorgiaTechFaces/masked/part_2"
 
 # 读取并处理图像数据
 X_train = []
@@ -55,18 +55,16 @@ y_test = []
 X_train, y_train = train_split(processedset_path)
 X_test, y_test = test_split(masked_processedset_path)
 
+
 X_train = np.array(X_train)
 y_train = np.array(y_train)
 X_test = np.array(X_test)
 y_test = np.array(y_test)
 
-X_train = X_train.reshape(-1, 1)
-X_test = X_test.reshape(-1, 1)
-
-# 标准化数据
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+# # 标准化数据
+# scaler = StandardScaler()
+# X_train = scaler.fit_transform(X_train)
+# X_test = scaler.transform(X_test)
 
 # 定义 k 值的范围
 k_values = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -106,3 +104,6 @@ os.makedirs(save_path, exist_ok=True)
 plot_save_path = os.path.join(save_path, "kNN_ConvertGrayscaleprocessedset_1_k_vs_accuracy.png")
 plt.savefig(plot_save_path)
 plt.show()
+
+print("length_of_X_train:{}".format(len(X_train)))
+print("length_of_X_test:{}".format(len(X_test)))

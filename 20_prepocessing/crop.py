@@ -1,113 +1,75 @@
 import os
-import detector2
 import detector3
 import dlib
 import numpy as np
 from matplotlib import pyplot as plt
 from skimage.feature import hog
-# import more libraries as you need
 import cv2
 import tqdm
 
-# T1  start _______________________________________________________________________________
-# Read in Dataset
-
-# change the dataset path here according to your folder structure
-
-
-dataset_path = "../20_GeorgiaTechFaces/dataset/part_1"
+# 设置数据集路径
+dataset_path = "../20_GeorgiaTechFaces/related/part_1"
 predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
 
+# 读取原始数据集
 X = []
-count = 0
-for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-    if img_name.endswith('.jpg'):
-        count += 1
-        # if count <= 100000:
-        #     continue
-        img_path = os.path.join(dataset_path, img_name)
-        img = cv2.imread(img_path)
-        # if len(X) >= 100000:
-        #     break
-        if img is not None:
-            X.append(img)
+for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
+    if os.path.isdir(os.path.join(dataset_path, subject_name)):
+        subject_images_dir = os.path.join(dataset_path, subject_name)
+        temp_x_list = []
+        for img_name in os.listdir(subject_images_dir):
+            if img_name.endswith('.jpg'):
+                img_path = os.path.join(subject_images_dir, img_name)
+                img = cv2.imread(img_path)
+                temp_x_list.append((img_name, img))
+        X.append((subject_name, temp_x_list))
 
+# 读取有遮挡的数据集
 dataset_path = '../20_GeorgiaTechFaces/masked/part_1'
 X_masked = []
-for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-    if img_name.endswith('.jpg'):
-        img_path = os.path.join(dataset_path, img_name)
-        img = cv2.imread(img_path)
-        # if len(X_masked) >= 5000:
-        #     break
-        if img is not None:
-            X_masked.append(img)
+for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
+    if os.path.isdir(os.path.join(dataset_path, subject_name)):
+        subject_images_dir = os.path.join(dataset_path, subject_name)
+        temp_x_mask_list = []
+        for img_name in os.listdir(subject_images_dir):
+            if img_name.endswith('.jpg'):
+                img_path = os.path.join(subject_images_dir, img_name)
+                img = cv2.imread(img_path)
+                temp_x_mask_list.append((img_name, img))
+        X_masked.append((subject_name, temp_x_mask_list))
 
-dataset_path = '../20_GeorgiaTechFaces/related/part_1'
-related = []
-for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-    if img_name.endswith('.png'):
-        img_path = os.path.join(dataset_path, img_name)
-        img = cv2.imread(img_path)
-        # if len(related) >= 5000:
-        #     break
-        if img is not None:
-            related.append(img)
-
-
-
+# 预处理图像
 X_maskprocessed = []
 X_processed = []
-image_labels = []
-for i in tqdm.tqdm(zip(range(len(X))), desc='preprocessing images 1'):
-    temp_img = detector2.crop_and_resize_face(X[i], detector, predictor)
-    if temp_img is None:
-        continue
-    # append the converted image into temp_X_processed
-    # append temp_X_processed into  X_processed
-    X_processed.append(temp_img)
+for i in tqdm.tqdm(range(len(X)), desc='preprocessing images'):
+    temp_X_processed = []
+    temp_X_maskprocessed = []
+    subject_name, x_list = X[i]
+    _, x_masklist = X_masked[i]
+    for j in range(len(x_list)):
+        img_name, img = x_list[j]
+        _, mask_img = x_masklist[j]
+        temp_img, temp_maskimg = detector3.crop_and_resize_face(img, mask_img, detector, predictor)
+        temp_X_processed.append((img_name, temp_img))
+        temp_X_maskprocessed.append((img_name, temp_maskimg))
+    X_processed.append((subject_name, temp_X_processed))
+    X_maskprocessed.append((subject_name, temp_X_maskprocessed))
 
-image_labels_mask = []
-for i in tqdm.tqdm(zip(range(len(related))), desc='preprocessing images 1'):
-    t, temp_maskimg = detector3.crop_and_resize_face(related[i], X_masked[i], detector, predictor)
-    if temp_maskimg is None:
-        continue
-        print(i)
-        plt.imshow(cv2.cvtColor(related[i], cv2.COLOR_BGR2RGB))  # Display the image with no faces detected
-        plt.title('No faces detected')
-        plt.show()
+# 保存处理后的图像
+maskprocessed_dataset_path = '../GeorgiaTechFaces/Maskedcrop_1'
+os.makedirs(maskprocessed_dataset_path, exist_ok=True)
+for subject_name, subject_images in X_maskprocessed:
+    subject_folder = os.path.join(maskprocessed_dataset_path, subject_name)
+    os.makedirs(subject_folder, exist_ok=True)
+    for img_name, img in subject_images:
+        cv2.imwrite(os.path.join(subject_folder, img_name), img)
 
-    # append the converted image into temp_X_processed
-    # append temp_X_processed into  X_processed
-    X_maskprocessed.append(temp_maskimg)
-
-# Save the processed images
-maskprocessed_dataset_path = '../20_GeorgiaTechFaces/Maskedcrop_1/part_1'
-if not os.path.exists(maskprocessed_dataset_path):
-    os.makedirs(maskprocessed_dataset_path)
-for i, img in enumerate(X_maskprocessed):
-    img_save_path = os.path.join(maskprocessed_dataset_path, f"{str(i + 1).zfill(6)}.jpg")
-    cv2.imwrite(img_save_path, img)
-
-processed_dataset_path = '../20_GeorgiaTechFaces/Crop_1/part_1'
-if not os.path.exists(processed_dataset_path):
-    os.makedirs(processed_dataset_path)
-for i, img in enumerate(X_processed):
-    img_save_path = os.path.join(processed_dataset_path, f"{str(i + 100001).zfill(6)}.jpg")
-    cv2.imwrite(img_save_path, img)
-
-path = '../20_GeorgiaTechFaces'
-# 将图片编号和人物序号保存到txt文件中
-with open(os.path.join(Masked_dataset_path, "crop_part_1_labels.txt"), 'w') as f:
-    for img_number, label in image_labels:
-        f.write(f"{img_number} {label}\n")
-
-path = '../20_GeorgiaTechFaces'
-# 将图片编号和人物序号保存到txt文件中
-with open(os.path.join(Masked_dataset_path, "mask_crop_part_1_labels.txt"), 'w') as f:
-    for img_number, label in image_labels_mask:
-        f.write(f"{img_number} {label}\n")
-
-
+processed_dataset_path = '../GeorgiaTechFaces/Crop_1'
+os.makedirs(processed_dataset_path, exist_ok=True)
+for subject_name, subject_images in X_processed:
+    subject_folder = os.path.join(processed_dataset_path, subject_name)
+    os.makedirs(subject_folder, exist_ok=True)
+    for img_name, img in subject_images:
+        cv2.imwrite(os.path.join(subject_folder, img_name), img)

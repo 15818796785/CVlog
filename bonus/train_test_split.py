@@ -16,7 +16,7 @@ def train_split(path):
 
     for forder in tqdm.tqdm(os.listdir(path), desc='split train data:'):
           for i, img in enumerate(os.listdir(os.path.join(path, forder))):
-             if (i < len(os.listdir(os.path.join(path, forder))) / 3):
+             if (i < len(os.listdir(os.path.join(path, forder))) / 3 * 2):
                  p = os.path.join(path, forder, img)
                  
                  img = cv2.imread(p, cv2.IMREAD_GRAYSCALE)
