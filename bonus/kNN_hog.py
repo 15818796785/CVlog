@@ -7,6 +7,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import tqdm
+from train_test_split import train_split
+from train_test_split import test_split
 
 
 # 定义HOG特征提取函数
@@ -15,8 +17,8 @@ def extract_hog_features(image):
     return features, hog_image
 
 
-processedset_path = "../GeorgiaTechFaces/ConvertGrayscaleprocessedset_1"
-masked_processedset_path = "../GeorgiaTechFaces/ConvertGrayscaleMaskprocessedset_1"
+processedset_path = "../20_GeorgiaTechFaces/dataset/part_1"
+masked_processedset_path = "../20_GeorgiaTechFaces/masked/part_1"
 
 # 读取并处理图像数据
 X_train = []
@@ -24,36 +26,42 @@ y_train = []
 X_test = []
 y_test = []
 
-# 读取不戴口罩的图像数据作为训练集
-for i, subject_name in enumerate(tqdm.tqdm(os.listdir(processedset_path), desc='reading processed images')):
-    if os.path.isdir(os.path.join(processedset_path, subject_name)):
-        subject_images_dir = os.path.join(processedset_path, subject_name)
-        img_names = os.listdir(subject_images_dir)[:10]  # 取前10张图像
-        for img_name in img_names:
-                img_path = os.path.join(subject_images_dir, img_name)
-                img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)  # 读取为灰度图像
-                img = cv2.resize(img, (64, 64))  # 调整图像大小（可选）
-                features, hog_image = extract_hog_features(img)
-                X_train.append(features)
-                y_train.append(i + 1)  # 使用i作为标签
+# # 读取不戴口罩的图像数据作为训练集
+# for i, subject_name in enumerate(tqdm.tqdm(os.listdir(processedset_path), desc='reading processed images')):
+#     if os.path.isdir(os.path.join(processedset_path, subject_name)):
+#         subject_images_dir = os.path.join(processedset_path, subject_name)
+#         img_names = os.listdir(subject_images_dir)[:10]  # 取前10张图像
+#         for img_name in img_names:
+#                 img_path = os.path.join(subject_images_dir, img_name)
+#                 img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)  # 读取为灰度图像
+#                 img = cv2.resize(img, (64, 64))  # 调整图像大小（可选）
+#                 features, hog_image = extract_hog_features(img)
+#                 X_train.append(features)
+#                 y_train.append(i + 1)  # 使用i作为标签
+#
+# # 读取戴口罩的图像数据作为测试集
+# for i, subject_name in enumerate(tqdm.tqdm(os.listdir(masked_processedset_path), desc='reading masked images')):
+#     if os.path.isdir(os.path.join(masked_processedset_path, subject_name)):
+#         subject_images_dir = os.path.join(masked_processedset_path, subject_name)
+#         img_names = os.listdir(subject_images_dir)[-5:]
+#         for img_name in img_names:
+#                 img_path = os.path.join(subject_images_dir, img_name)
+#                 img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)  # 读取为灰度图像
+#                 img = cv2.resize(img, (64, 64))  # 调整图像大小（可选）
+#                 features, hog_image = extract_hog_features(img)
+#                 X_test.append(features)
+#                 y_test.append(i + 1)
 
-# 读取戴口罩的图像数据作为测试集
-for i, subject_name in enumerate(tqdm.tqdm(os.listdir(masked_processedset_path), desc='reading masked images')):
-    if os.path.isdir(os.path.join(masked_processedset_path, subject_name)):
-        subject_images_dir = os.path.join(masked_processedset_path, subject_name)
-        img_names = os.listdir(subject_images_dir)[-5:]
-        for img_name in img_names:
-                img_path = os.path.join(subject_images_dir, img_name)
-                img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)  # 读取为灰度图像
-                img = cv2.resize(img, (64, 64))  # 调整图像大小（可选）
-                features, hog_image = extract_hog_features(img)
-                X_test.append(features)
-                y_test.append(i + 1)
+X_train, y_train = train_split(processedset_path)
+X_test, y_test = test_split(masked_processedset_path)
 
 X_train = np.array(X_train)
 y_train = np.array(y_train)
 X_test = np.array(X_test)
 y_test = np.array(y_test)
+
+X_train = X_train.reshape(-1, 1)
+X_test = X_test.reshape(-1, 1)
 
 # 标准化数据
 scaler = StandardScaler()

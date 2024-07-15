@@ -3,7 +3,7 @@ import shutil
 import tqdm
 
 # 源图片文件夹路径
-source_folder = "../20_GeorgiaTechFaces/img_align_celeba/img_align_celeba"
+source_folder = "../../../img_align_celeba/img_align_celeba"
 
 # 目标文件夹路径
 target_folder = "../20_GeorgiaTechFaces/dataset"
