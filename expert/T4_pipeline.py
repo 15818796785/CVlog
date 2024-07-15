@@ -234,17 +234,6 @@ for subject_name in tqdm.tqdm(os.listdir(unmask_processedset_path), desc='readin
                 temp_x_list.append(img)
         X_processed.append(temp_x_list)
         
-X_readTest = []
-for subject_name in tqdm.tqdm(os.listdir(processedset_path), desc='reading test processed images'):
-    if os.path.isdir(os.path.join(processedset_path, subject_name)):
-        subject_images_dir = os.path.join(processedset_path, subject_name)
-        temp_x_list = []
-        for img_name in os.listdir(subject_images_dir):
-            if img_name.endswith('.jpg') and int(img_name.split('.')[0]) >= 11 and int(img_name.split('.')[0]) <= 15:
-                img_path = os.path.join(subject_images_dir, img_name)
-                img = face_recognition.load_image_file(img_path)
-                temp_x_list.append(img)
-        X_readTest.append(temp_x_list)
 
 X_employee = X_processed[0:30]
 X_outsider = X_processed[30:]
@@ -269,9 +258,9 @@ mask_processedset_path = "GeorgiaTechFaces/Maskedgray_1"
 X_processed = []
 y = []
 
-for subject_name in tqdm.tqdm(os.listdir(processedset_path), desc='reading processed images'):
-    if os.path.isdir(os.path.join(processedset_path, subject_name)):
-        subject_images_dir = os.path.join(processedset_path, subject_name)
+for subject_name in tqdm.tqdm(os.listdir(mask_processedset_path), desc='reading processed images'):
+    if os.path.isdir(os.path.join(mask_processedset_path, subject_name)):
+        subject_images_dir = os.path.join(mask_processedset_path, subject_name)
         temp_x_list = []
         for img_name in os.listdir(subject_images_dir):
             if img_name.endswith('.jpg') and 1 <= int(img_name.split('.')[0]) <= 10:
@@ -342,7 +331,7 @@ for image in X_mask:
             break
         encoding = np.array(encoding)
         # change the tolerance value here to get the best result
-        results = face_recognition.compare_faces(encoding, probe_encoding, tolerance=0.7)
+        results = face_recognition.compare_faces(encoding, probe_encoding, tolerance=0.5)
         if len(results) and results[0]:
             if flag == 0:
                 print("ACCEPT")
@@ -367,5 +356,4 @@ plot_confusion_matrix(y_mask, y_probe_mask, ['Employee', 'Outsider'])
 
 # if_wear_mask_accuracy: 100.00%
 # unmask_accuracy: 96.73%
-# mask_accuracy: 51.70% (0.5)
-# mask_accuracy: 58.50% (0.65)
+# mask_accuracy: 62.59% (0.4)
