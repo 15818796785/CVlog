@@ -7,11 +7,11 @@ import tqdm
 import preprocessing_utils
 
 # 定义路径
-dataset_path = "../20_GeorgiaTechFaces/dataset/part_1"
+dataset_path = "../20_GeorgiaTechFaces/dataset/part_3"
 predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
-Masked_dataset_path = "../20_GeorgiaTechFaces/masked/part_1"
-related_dataset_path = "../20_GeorgiaTechFaces/related/part_1"
-rotate_dataset_path = "../20_GeorgiaTechFaces/rotate/part_1"
+Masked_dataset_path = "../20_GeorgiaTechFaces/masked/part_3"
+related_dataset_path = "../20_GeorgiaTechFaces/related/part_3"
+rotate_dataset_path = "../20_GeorgiaTechFaces/rotate/part_3"
 
 # 初始化dlib的面部检测器和面部标志预测器
 detector = dlib.get_frontal_face_detector()
@@ -36,44 +36,47 @@ def add_mask(image, landmarks):
 X_masked = []
 related = []
 rotate = []
-image_names = []
-count = 0
-for img_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-    if img_name.endswith('.jpg'):
-        # count += 1
-        # if count % 10 == 0:  # 每隔十个图片读取一张
-        img_path = os.path.join(dataset_path, img_name)
-        img = cv2.imread(img_path)
-        if img is not None:
-            dets = detector(img, 1)
-            if len(dets) == 0:
-                print(f'No features detected in image {img_name}')
-                continue
-            for k, d in enumerate(dets):
-                shape = predictor(img, d)
-                landmarks = np.array([[p.x, p.y] for p in shape.parts()])
-                masked_face = add_mask(img, landmarks)
-                rotate_face = preprocessing_utils.random_rotate(img)
-                related.append((img_name, img))
-                rotate.append((img_name, rotate_face))
-                X_masked.append((img_name, masked_face))
-                image_names.append(img_name)
-        # if len(image_names) >= 20000:  # 达到20000张图片时结束
-        #     break
+
+for person_id in tqdm.tqdm(os.listdir(dataset_path), desc='Processing persons'):
+    person_folder = os.path.join(dataset_path, person_id)
+    if os.path.isdir(person_folder):
+        for img_name in os.listdir(person_folder):
+            if img_name.endswith('.jpg'):
+                img_path = os.path.join(person_folder, img_name)
+                img = cv2.imread(img_path)
+                if img is not None:
+                    dets = detector(img, 1)
+                    if len(dets) == 0:
+                        print(f'No features detected in image {img_name}')
+                        continue
+                    for k, d in enumerate(dets):
+                        shape = predictor(img, d)
+                        landmarks = np.array([[p.x, p.y] for p in shape.parts()])
+                        masked_face = add_mask(img, landmarks)
+                        rotate_face = preprocessing_utils.random_rotate(img)
+                        related.append((person_id, img_name, img))
+                        rotate.append((person_id, img_name, rotate_face))
+                        X_masked.append((person_id, img_name, masked_face))
 
 # 确保目录存在，如果不存在则创建
 os.makedirs(Masked_dataset_path, exist_ok=True)
 os.makedirs(related_dataset_path, exist_ok=True)
 os.makedirs(rotate_dataset_path, exist_ok=True)
 
-# 保存处理后的图片
-for img_name, img in X_masked:
-    cv2.imwrite(os.path.join(Masked_dataset_path, img_name), img)
+# 保存处理后的图片到相应的子文件夹
+for person_id, img_name, img in tqdm.tqdm(X_masked, desc='saving masked images'):
+    person_folder = os.path.join(Masked_dataset_path, person_id)
+    os.makedirs(person_folder, exist_ok=True)
+    cv2.imwrite(os.path.join(person_folder, img_name), img)
 
-for img_name, img in related:
-    cv2.imwrite(os.path.join(related_dataset_path, img_name), img)
+for person_id, img_name, img in tqdm.tqdm(related, desc='saving related images'):
+    person_folder = os.path.join(related_dataset_path, person_id)
+    os.makedirs(person_folder, exist_ok=True)
+    cv2.imwrite(os.path.join(person_folder, img_name), img)
 
-for img_name, img in rotate:
-    cv2.imwrite(os.path.join(rotate_dataset_path, img_name), img)
+for person_id, img_name, img in tqdm.tqdm(rotate, desc='saving rotated images'):
+    person_folder = os.path.join(rotate_dataset_path, person_id)
+    os.makedirs(person_folder, exist_ok=True)
+    cv2.imwrite(os.path.join(person_folder, img_name), img)
 
 print("Processing complete.")
