@@ -18,6 +18,7 @@ def train_split(path):
           for i, img in enumerate(os.listdir(os.path.join(path, forder))):
              if (i < len(os.listdir(os.path.join(path, forder))) / 3):
                  p = os.path.join(path, forder, img)
+                 
                  img = cv2.imread(p, cv2.IMREAD_GRAYSCALE)
                  img = cv2.resize(img, (64, 64))
                  img = np.asarray(img, dtype=np.float32)
@@ -47,7 +48,7 @@ def test_split(path):
                 X_test.append(hog_features)
                 y_test.append(forder)
             else:
-                break
+                continue
 
     return X_test, y_test
 
