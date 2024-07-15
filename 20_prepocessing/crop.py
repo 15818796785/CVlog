@@ -52,8 +52,10 @@ for i in tqdm.tqdm(range(len(X)), desc='preprocessing images'):
         img_name, img = x_list[j]
         _, mask_img = x_masklist[j]
         temp_img, temp_maskimg = detector3.crop_and_resize_face(img, mask_img, detector, predictor)
-        temp_X_processed.append((img_name, temp_img))
-        temp_X_maskprocessed.append((img_name, temp_maskimg))
+        if temp_img is not None:
+            temp_X_processed.append((img_name, temp_img))
+        if temp_maskimg is not None:
+            temp_X_maskprocessed.append((img_name, temp_maskimg))
     X_processed.append((subject_name, temp_X_processed))
     X_maskprocessed.append((subject_name, temp_X_maskprocessed))
 
