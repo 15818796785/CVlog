@@ -86,8 +86,8 @@ for i, img_number in tqdm.tqdm(zip(range(len(X)), image_numbers), desc='preproce
     else:
         image_labels.append((img_number, -1))
 
-
-for i in tqdm.tqdm(range(len(related)), desc='preprocessing images 2'):
+image_labels_mask = []
+for i, img_number in tqdm.tqdm(zip(range(len(related)), image_numbers_mask), desc='preprocessing images 1'):
     t, temp_maskimg = detector3.crop_and_resize_face(related[i], X_masked[i], detector, predictor)
     if temp_maskimg is None:
         continue
@@ -99,6 +99,10 @@ for i in tqdm.tqdm(range(len(related)), desc='preprocessing images 2'):
     # append the converted image into temp_X_processed
     # append temp_X_processed into  X_processed
     X_maskprocessed.append(temp_maskimg)
+    if img_number in image_labels_dict:
+        image_labels_mask.append((img_number, image_labels_dict[img_number]))  # 记录图片编号和人物序号
+    else:
+        image_labels_mask.append((img_number, -1))
 
 # Save the processed images
 maskprocessed_dataset_path = '../20_GeorgiaTechFaces/Maskedcrop_1/part_1'
@@ -114,5 +118,17 @@ if not os.path.exists(processed_dataset_path):
 for i, img in enumerate(X_processed):
     img_save_path = os.path.join(processed_dataset_path, f"{str(i + 100001).zfill(6)}.jpg")
     cv2.imwrite(img_save_path, img)
+
+path = '../20_GeorgiaTechFaces'
+# 将图片编号和人物序号保存到txt文件中
+with open(os.path.join(Masked_dataset_path, "crop_part_1_labels.txt"), 'w') as f:
+    for img_number, label in image_labels:
+        f.write(f"{img_number} {label}\n")
+
+path = '../20_GeorgiaTechFaces'
+# 将图片编号和人物序号保存到txt文件中
+with open(os.path.join(Masked_dataset_path, "mask_crop_part_1_labels.txt"), 'w') as f:
+    for img_number, label in image_labels_mask:
+        f.write(f"{img_number} {label}\n")
 
 
