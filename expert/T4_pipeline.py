@@ -320,7 +320,7 @@ for image in X_unmask:
 unmask_accuracy = accuracy_score(y_unmask, y_probe_unmask)
 
 order = 0
-# test in unmask images
+# test in mask images
 for image in X_mask:
     print(f"Processing image {order}")
     order += 1
@@ -352,8 +352,9 @@ mask_accuracy = accuracy_score(y_mask, y_probe_mask)
 print(f"if_wear_mask_accuracy: {(wear_mask_accuracy*100):.2f}%")
 print(f"unmask_accuracy: {unmask_accuracy * 100:.2f}%")
 print(f"mask_accuracy: {mask_accuracy * 100:.2f}%")
-plot_confusion_matrix(y_mask, y_probe_mask, ['Employee', 'Outsider'])
+plot_confusion_matrix(y_mask, y_probe_mask, ['Outsider', 'Employee'])
 
 # if_wear_mask_accuracy: 100.00%
 # unmask_accuracy: 96.73%
 # mask_accuracy: 62.59% (0.4)
+# mask_accuracy: 60.54% (0.5)
