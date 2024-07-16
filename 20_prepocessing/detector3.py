@@ -7,64 +7,55 @@ from matplotlib import pyplot as plt
 
 
 def crop_and_resize_face(img, img_masked, detector, predictor):
-        """
-        Detect the face, extract facial landmarks, crop the face region, and resize the image.
+    """
+    Detect the face, extract facial landmarks, crop the face region, and resize the image.
 
-        Parameters:
-        img (numpy.array): The image from which to detect the face and extract landmarks.
-        detector (dlib.fhog_object_detector): A dlib face detector.
-        predictor (dlib.shape_predictor): A dlib shape predictor.
+    Parameters:
+    img (numpy.array): The image from which to detect the face and extract landmarks.
+    img_masked (numpy.array): The masked image corresponding to img.
+    detector (dlib.fhog_object_detector): A dlib face detector.
+    predictor (dlib.shape_predictor): A dlib shape predictor.
 
-        Returns:
-        numpy.array: The cropped and resized face image.
-        """
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to dlib compatible color space
+    Returns:
+    numpy.array, numpy.array: The cropped and resized face image and the corresponding masked image.
+    """
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to dlib compatible color space
 
-        # Detect faces
-        dets = detector(img_rgb, 1)
-        if len(dets) == 0:
-            print('no faces detected')
-            return None, None  # No faces detected
+    # Detect faces
+    dets = detector(img_rgb, 1)
+    if len(dets) == 0:
+        print('No faces detected')
+        return None, None  # No faces detected
 
-        # Process the first detected face
-        d = dets[0]  # Assuming the first detected face is the subject
-        # # Extract the face region from the image
-        # face_region = img[d.top():d.bottom(), d.left():d.right()]
-        #
-        # # Convert the face region to a format suitable for displaying
-        # # This might involve converting from BGR to RGB if using OpenCV to load images
-        # if face_region.ndim == 3:  # Color image
-        #         face_region = face_region[:, :, ::-1]  # Converting BGR (OpenCV format) to RGB
-        # plt.imshow(face_region)  # 'cmap' is not necessary unless you want a specific colormap
-        # plt.colorbar()  # Optionally add a color bar
-        # plt.show()
+    # Process the first detected face
+    d = dets[0]  # Assuming the first detected face is the subject
 
-        shape = predictor(img_rgb, d)
+    shape = predictor(img_rgb, d)
 
-        # Get the bounding box coordinates from the landmarks
-        x_min = min([shape.part(i).x for i in range(shape.num_parts)])
-        x_max = max([shape.part(i).x for i in range(shape.num_parts)])
-        y_min = min([shape.part(i).y for i in range(shape.num_parts)])
-        y_max = max([shape.part(i).y for i in range(shape.num_parts)])
+    # Get the bounding box coordinates from the landmarks
+    x_min = min([shape.part(i).x for i in range(shape.num_parts)])
+    x_max = max([shape.part(i).x for i in range(shape.num_parts)])
+    y_min = min([shape.part(i).y for i in range(shape.num_parts)])
+    y_max = max([shape.part(i).y for i in range(shape.num_parts)])
 
-        # Crop and resize
-        cropped_maskedface = img_masked[y_min:y_max, x_min:x_max]
-        cropped_face = img[y_min:y_max, x_min:x_max]
-        if cropped_face.size == 0 or cropped_face is None:
-                plt.imshow(img)  # Display the image with no faces detected
-                plt.title('No faces detected')
-                plt.show()
-                return None, None
-        if cropped_maskedface.size == 0 or cropped_maskedface is None:
-                plt.imshow(img)  # Display the image with no faces detected
-                plt.title('No faces detected')
-                plt.show()
-        resized_face = cv2.resize(cropped_face, (150, 150))
-        resized_maskedface = cv2.resize(cropped_maskedface, (150, 150))
-        # 显示检测到的人脸
+    # Crop to the upper half of the face (from the top of the face to the nose)
+    nose_y = shape.part(30).y  # Nose tip y-coordinate (landmark index 30)
 
-        return resized_face, resized_maskedface
+    cropped_face = img[y_min:nose_y, x_min:x_max]
+    cropped_maskedface = img_masked[y_min:nose_y, x_min:x_max]
 
+    if cropped_face.size == 0 or cropped_face is None:
+        plt.imshow(img)  # Display the image with no faces detected
+        plt.title('No faces detected')
+        plt.show()
+        return None, None
+    if cropped_maskedface.size == 0 or cropped_maskedface is None:
+        plt.imshow(img)  # Display the image with no faces detected
+        plt.title('No faces detected')
+        plt.show()
 
+    # Resize
+    resized_face = cv2.resize(cropped_face, (150, 150))
+    resized_maskedface = cv2.resize(cropped_maskedface, (150, 150))
 
-# 使用方法
+    return resized_face, resized_maskedface
