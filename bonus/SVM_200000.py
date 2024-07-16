@@ -11,7 +11,7 @@ from CVlog.bonus.utils import train_model_in_batch, save_model, load_model, read
 
 # 数据集路径
 dataset_path = "../img_align_celeba"
-#masked_path = 'GeorgiaTechFaces/Maskedcrop_1'
+#masked_path = 'GeorgiaTechFaces/mask_crop_prolong'
 
 # 读取未戴口罩的数据
 X_train = []

@@ -20,5 +20,5 @@ def remove_folders_with_fewer_than_ten_images(parent_folder):
 
 
 # 传入文件夹路径
-parent_folder = "../20_GeorgiaTechFaces/dataset"
+parent_folder = "../20_GeorgiaTechFaces/washed_data"
 remove_folders_with_fewer_than_ten_images(parent_folder)

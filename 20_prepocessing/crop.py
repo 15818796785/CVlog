@@ -8,7 +8,7 @@ import cv2
 import tqdm
 
 # 设置数据集路径
-dataset_path = "../20_GeorgiaTechFaces/related"
+dataset_path = "../20_GeorgiaTechFaces/washed_data"
 predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
@@ -16,7 +16,7 @@ predictor = dlib.shape_predictor(predictor_path)
 # 读取原始数据集
 X = []
 for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-    if os.path.isdir(os.path.join(dataset_path, subject_name)):
+    if os.path.isdir(os.path.join(dataset_path, subject_name)) and len(X) < 500:
         subject_images_dir = os.path.join(dataset_path, subject_name)
         temp_x_list = []
         for img_name in os.listdir(subject_images_dir):
@@ -30,7 +30,7 @@ for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
 dataset_path = '../20_GeorgiaTechFaces/masked'
 X_masked = []
 for subject_name in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
-    if os.path.isdir(os.path.join(dataset_path, subject_name)):
+    if os.path.isdir(os.path.join(dataset_path, subject_name)) and len(X_masked) < 500:
         subject_images_dir = os.path.join(dataset_path, subject_name)
         temp_x_mask_list = []
         for img_name in os.listdir(subject_images_dir):
@@ -60,7 +60,7 @@ for i in tqdm.tqdm(range(len(X)), desc='preprocessing images'):
     X_maskprocessed.append((subject_name, temp_X_maskprocessed))
 
 # 保存处理后的图像
-maskprocessed_dataset_path = '../20_GeorgiaTechFaces/Maskedcrop_1'
+maskprocessed_dataset_path = '../20_GeorgiaTechFaces/mask_crop'
 os.makedirs(maskprocessed_dataset_path, exist_ok=True)
 for subject_name, subject_images in X_maskprocessed:
     subject_folder = os.path.join(maskprocessed_dataset_path, subject_name)
@@ -68,7 +68,7 @@ for subject_name, subject_images in X_maskprocessed:
     for img_name, img in subject_images:
         cv2.imwrite(os.path.join(subject_folder, img_name), img)
 
-processed_dataset_path = '../20_GeorgiaTechFaces/Crop_1'
+processed_dataset_path = '../20_GeorgiaTechFaces/crop'
 os.makedirs(processed_dataset_path, exist_ok=True)
 for subject_name, subject_images in X_processed:
     subject_folder = os.path.join(processed_dataset_path, subject_name)

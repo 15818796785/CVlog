@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 import random
 
-processedset_path = "GeorgiaTechFaces/Maskedcrop_1"
+processedset_path = "GeorgiaTechFaces/mask_crop_prolong"
 
 X_processed = []
 y = []

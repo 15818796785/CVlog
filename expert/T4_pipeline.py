@@ -89,8 +89,8 @@ def split_and_shuffle_lists(list1, list2, list3, list4, test_size=0.2, random_st
             list(list3_train), list(list3_test),
             list(list4_train), list(list4_test))
 
-maskedset_path = "GeorgiaTechFaces/Maskedcrop_1"
-processedset_path = "GeorgiaTechFaces/Crop_1"
+maskedset_path = "GeorgiaTechFaces/mask_crop_prolong"
+processedset_path = "GeorgiaTechFaces/crop_prolong"
 
 X_masked = []
 X_processed = []

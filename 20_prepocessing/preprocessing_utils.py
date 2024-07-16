@@ -45,7 +45,7 @@ import numpy as np
 
 
 #高斯模糊
-def apply_gaussian_blur(image, kernel_size=(15, 15), sigma=4):
+def apply_gaussian_blur(image, kernel_size=(3, 3), sigma=2):
     return cv2.GaussianBlur(image, kernel_size, sigma)
 
 
@@ -74,5 +74,8 @@ def random_rotate(image):
 def random_scale(image):
     fx = fy = np.random.uniform(0.1, 3.0)  # 随机缩放比例
     return cv2.resize(image, None, fx=fx, fy=fy)
+
+def apply_horizontal_flip(image):
+    return  cv2.flip(image, 1)
 
 

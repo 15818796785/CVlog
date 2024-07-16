@@ -19,8 +19,8 @@ for person_id in tqdm.tqdm(os.listdir(dataset_path), desc='reading images'):
                 img_path = os.path.join(person_folder, img_name)
                 img = cv2.imread(img_path)
                 if img is not None:
-                    blured_face = preprocessing_utils.apply_gaussian_blur(img)
-                    X.append((person_id, img_name, blured_face))
+                    mirrored_face = preprocessing_utils.apply_horizontal_flip(img)
+                    X.append((person_id, img_name, mirrored_face))
 
 X_masked = []
 for person_id in tqdm.tqdm(os.listdir(Masked_dataset_path), desc='reading images'):
@@ -31,20 +31,20 @@ for person_id in tqdm.tqdm(os.listdir(Masked_dataset_path), desc='reading images
                 img_path = os.path.join(person_folder, img_name)
                 img = cv2.imread(img_path)
                 if img is not None:
-                    blured_face = preprocessing_utils.apply_gaussian_blur(img)
-                    X_masked.append((person_id, img_name, blured_face))
+                    mirrored_face = preprocessing_utils.apply_horizontal_flip(img)
+                    X_masked.append((person_id, img_name, mirrored_face))
 
-X_blur_dataset_path = '../20_GeorgiaTechFaces/blur'
-os.makedirs(X_blur_dataset_path, exist_ok=True)
+X_mirror_dataset_path = '../20_GeorgiaTechFaces/mirror'
+os.makedirs(X_mirror_dataset_path, exist_ok=True)
 # 保存处理后的图片到相应的子文件夹
-for person_id, img_name, img in tqdm.tqdm(X, desc='saving blur images'):
-    person_folder = os.path.join(X_blur_dataset_path, person_id)
+for person_id, img_name, img in tqdm.tqdm(X, desc='saving mirrored images'):
+    person_folder = os.path.join(X_mirror_dataset_path, person_id)
     os.makedirs(person_folder, exist_ok=True)
     cv2.imwrite(os.path.join(person_folder, img_name), img)
 
-X_masked_blur_dataset_path = '../20_GeorgiaTechFaces/blur_mask'
-os.makedirs(X_masked_blur_dataset_path, exist_ok=True)
-for person_id, img_name, img in tqdm.tqdm(X_masked, desc='saving blur images'):
-    person_folder = os.path.join(X_masked_blur_dataset_path, person_id)
+X_masked_mirror_dataset_path = '../20_GeorgiaTechFaces/mirror_mask'
+os.makedirs(X_masked_mirror_dataset_path, exist_ok=True)
+for person_id, img_name, img in tqdm.tqdm(X_masked, desc='saving mirrored images'):
+    person_folder = os.path.join(X_masked_mirror_dataset_path, person_id)
     os.makedirs(person_folder, exist_ok=True)
     cv2.imwrite(os.path.join(person_folder, img_name), img)

@@ -9,8 +9,8 @@ from sklearn.metrics import accuracy_score
 from CVlog.bonus.utils import train_model_in_batch, save_model, load_model
 
 # 数据集路径
-dataset_path = 'GeorgiaTechFaces/Crop_1'
-masked_path = 'GeorgiaTechFaces/Maskedcrop_1'
+dataset_path = 'GeorgiaTechFaces/crop_prolong'
+masked_path = 'GeorgiaTechFaces/mask_crop_prolong'
 
 # 读取未戴口罩的数据
 X_train = []

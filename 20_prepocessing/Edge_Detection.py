@@ -4,8 +4,8 @@ import cv2
 import os
 import tqdm
 
-dataset_path = "../20_GeorgiaTechFaces/Crop_1"
-maskeddataset_path = "../20_GeorgiaTechFaces/Maskedcrop_1"
+dataset_path = "../20_GeorgiaTechFaces/crop_prolong"
+maskeddataset_path = "../20_GeorgiaTechFaces/mask_crop_prolong"
 predictor_path = '../shape_predictor_68_face_landmarks.dat/shape_predictor_68_face_landmarks.dat'
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)

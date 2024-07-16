@@ -55,7 +55,7 @@ def crop_and_resize_face(img, img_masked, detector, predictor):
         plt.show()
 
     # Resize
-    resized_face = cv2.resize(cropped_face, (150, 150))
-    resized_maskedface = cv2.resize(cropped_maskedface, (150, 150))
+    # resized_face = cv2.resize(cropped_face, (150, 150))
+    # resized_maskedface = cv2.resize(cropped_maskedface, (150, 150))
 
-    return resized_face, resized_maskedface
+    return cropped_face, cropped_maskedface
