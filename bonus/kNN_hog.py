@@ -17,8 +17,8 @@ def extract_hog_features(image):
     return features, hog_image
 
 
-processedset_path = "../20_GeorgiaTechFaces/Crop_1/part_1"
-masked_processedset_path = "../20_GeorgiaTechFaces/Maskedcrop_1/part_2"
+processedset_path = "../20_GeorgiaTechFaces/related/part_1"
+masked_processedset_path = "../20_GeorgiaTechFaces/masked/part_1"
 
 # 读取并处理图像数据
 X_train = []
@@ -72,7 +72,7 @@ accuracies = []
 
 # 训练并测试 kNN 模型
 for k in k_values:
-    knn = KNeighborsClassifier(n_neighbors=k)
+    knn = KNeighborsClassifier(n_neighbors=k, p=2)
     knn.fit(X_train, y_train)
 
     # 进行预测
