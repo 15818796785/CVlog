@@ -17,8 +17,8 @@ def extract_hog_features(image):
     return features, hog_image
 
 
-processedset_path = "../20_GeorgiaTechFaces/related/part_1"
-masked_processedset_path = "../20_GeorgiaTechFaces/masked/part_1"
+processedset_path = "../20_GeorgiaTechFaces/gray"
+masked_processedset_path = "../20_GeorgiaTechFaces/gray_mask"
 
 # 读取并处理图像数据
 X_train = []
